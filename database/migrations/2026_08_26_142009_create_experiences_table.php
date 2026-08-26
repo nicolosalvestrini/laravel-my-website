@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('experiences', function (Blueprint $table) {
             $table->id();
+            $table->enum('type', ['formazione', 'esperienza']);
+            $table->string('title', 255);
+            $table->text('description')->nullable();
+            $table->date('period_start');
+            $table->date('period_end')->nullable();
+            $table->integer('sort_order')->default(0);
             $table->timestamps();
         });
     }

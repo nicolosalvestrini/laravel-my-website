@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Site_Settings;
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 
 class SiteSettingsController extends Controller
@@ -34,7 +34,7 @@ class SiteSettingsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Site_Settings $site_Settings)
+    public function show(SiteSetting $siteSetting)
     {
         //
     }
@@ -42,7 +42,7 @@ class SiteSettingsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Site_Settings $site_Settings)
+    public function edit(SiteSetting $siteSetting)
     {
         //
     }
@@ -50,7 +50,7 @@ class SiteSettingsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Site_Settings $site_Settings)
+    public function update(Request $request, SiteSetting $siteSetting)
     {
         //
     }
@@ -58,7 +58,7 @@ class SiteSettingsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Site_Settings $site_Settings)
+    public function destroy(SiteSetting $siteSetting)
     {
         //
     }

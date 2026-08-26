@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact_Messages;
+use App\Models\ContactMessage;
 use Illuminate\Http\Request;
 
 class ContactMessagesController extends Controller
@@ -12,7 +12,8 @@ class ContactMessagesController extends Controller
      */
     public function index()
     {
-        //
+        $contactMessages = ContactMessage::all();
+        return view('admin.contact-messages.index', compact('contactMessages'));
     }
 
     /**
@@ -20,7 +21,7 @@ class ContactMessagesController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -34,7 +35,7 @@ class ContactMessagesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Contact_Messages $contact_Messages)
+    public function show(ContactMessage $contactMessage)
     {
         //
     }
@@ -42,7 +43,7 @@ class ContactMessagesController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Contact_Messages $contact_Messages)
+    public function edit(ContactMessage $contactMessage)
     {
         //
     }
@@ -50,7 +51,7 @@ class ContactMessagesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Contact_Messages $contact_Messages)
+    public function update(Request $request, ContactMessage $contactMessage)
     {
         //
     }
@@ -58,7 +59,7 @@ class ContactMessagesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Contact_Messages $contact_Messages)
+    public function destroy(ContactMessage $contactMessage)
     {
         //
     }

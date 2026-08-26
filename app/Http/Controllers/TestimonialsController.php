@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Testimonials;
+use App\Models\Testimonial;
 use Illuminate\Http\Request;
 
 class TestimonialsController extends Controller
@@ -34,7 +34,7 @@ class TestimonialsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Testimonials $testimonials)
+    public function show(Testimonial $testimonial)
     {
         //
     }
@@ -42,7 +42,7 @@ class TestimonialsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Testimonials $testimonials)
+    public function edit(Testimonial $testimonial)
     {
         //
     }
@@ -50,7 +50,7 @@ class TestimonialsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Testimonials $testimonials)
+    public function update(Request $request, Testimonial $testimonial)
     {
         //
     }
@@ -58,7 +58,7 @@ class TestimonialsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Testimonials $testimonials)
+    public function destroy(Testimonial $testimonial)
     {
         //
     }

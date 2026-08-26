@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Experiences;
+use App\Models\Experience;
 use Illuminate\Http\Request;
 
 class ExperiencesController extends Controller
@@ -34,7 +34,7 @@ class ExperiencesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Experiences $experiences)
+    public function show(Experience $experience)
     {
         //
     }
@@ -42,7 +42,7 @@ class ExperiencesController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Experiences $experiences)
+    public function edit(Experience $experience)
     {
         //
     }
@@ -50,7 +50,7 @@ class ExperiencesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Experiences $experiences)
+    public function update(Request $request, Experience $experience)
     {
         //
     }
@@ -58,7 +58,7 @@ class ExperiencesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Experiences $experiences)
+    public function destroy(Experience $experience)
     {
         //
     }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Projects;
+use App\Models\Project;
 use Illuminate\Http\Request;
 
 class ProjectsController extends Controller
@@ -34,7 +34,7 @@ class ProjectsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Projects $projects)
+    public function show(Project $project)
     {
         //
     }
@@ -42,7 +42,7 @@ class ProjectsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Projects $projects)
+    public function edit(Project $project)
     {
         //
     }
@@ -50,7 +50,7 @@ class ProjectsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Projects $projects)
+    public function update(Request $request, Project $project)
     {
         //
     }
@@ -58,7 +58,7 @@ class ProjectsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Projects $projects)
+    public function destroy(Project $project)
     {
         //
     }

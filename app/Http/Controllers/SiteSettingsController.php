@@ -12,7 +12,8 @@ class SiteSettingsController extends Controller
      */
     public function index()
     {
-        //
+        $siteSettings = SiteSetting::all();
+        return view('admin.site-settings.index', compact('siteSettings'));
     }
 
     /**
@@ -20,7 +21,7 @@ class SiteSettingsController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.site-settings.create');
     }
 
     /**
@@ -28,7 +29,15 @@ class SiteSettingsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'key' => 'required|string|max:255|unique:site_settings,key',
+            'value' => 'nullable|string',
+        ]);
+
+        SiteSetting::create($data);
+
+        return redirect()->route('admin.site-settings.index')
+            ->with('success', 'Impostazione del sito creata con successo.');
     }
 
     /**
@@ -36,7 +45,7 @@ class SiteSettingsController extends Controller
      */
     public function show(SiteSetting $siteSetting)
     {
-        //
+        return view('admin.site-settings.show', compact('siteSetting'));
     }
 
     /**
@@ -44,7 +53,7 @@ class SiteSettingsController extends Controller
      */
     public function edit(SiteSetting $siteSetting)
     {
-        //
+        return view('admin.site-settings.edit', compact('siteSetting'));
     }
 
     /**
@@ -52,7 +61,15 @@ class SiteSettingsController extends Controller
      */
     public function update(Request $request, SiteSetting $siteSetting)
     {
-        //
+        $data = $request->validate([
+            'key' => 'required|string|max:255|unique:site_settings,key,' . $siteSetting->id,
+            'value' => 'nullable|string',
+        ]);
+
+        $siteSetting->update($data);
+
+        return redirect()->route('admin.site-settings.index')
+            ->with('success', 'Impostazione del sito aggiornata con successo.');
     }
 
     /**
@@ -60,6 +77,9 @@ class SiteSettingsController extends Controller
      */
     public function destroy(SiteSetting $siteSetting)
     {
-        //
+        $siteSetting->delete();
+
+        return redirect()->route('admin.site-settings.index')
+            ->with('success', 'Impostazione del sito eliminata con successo.');
     }
 }

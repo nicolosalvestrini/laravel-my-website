@@ -19,17 +19,25 @@ class ContactMessagesController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'request_type' => 'required|in:preventivo,collaborazione,lavoro,informazioni,altro',
+            'message' => 'required|string',
+        ]);
+
+        ContactMessage::create($data);
+
+        return response()->json([
+            'message' => 'Il tuo messaggio è stato inviato correttamente.',
+        ], 201);
     }
 
     /**
@@ -37,7 +45,10 @@ class ContactMessagesController extends Controller
      */
     public function show(ContactMessage $contactMessage)
     {
-        //
+        if (! $contactMessage->is_read) {
+            $contactMessage->update(['is_read' => true]);
+        }
+        return view('admin.contact-messages.show', compact('contactMessage'));
     }
 
     /**
@@ -61,6 +72,9 @@ class ContactMessagesController extends Controller
      */
     public function destroy(ContactMessage $contactMessage)
     {
-        //
+        $contactMessage->delete();
+
+        return redirect()->route('admin.contact-messages.index')
+            ->with('success', 'Messaggio eliminato con successo.');
     }
 }

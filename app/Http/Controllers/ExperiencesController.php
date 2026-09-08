@@ -12,7 +12,8 @@ class ExperiencesController extends Controller
      */
     public function index()
     {
-        //
+        $experiences = Experience::all();
+        return view('admin.experiences.index', compact('experiences'));
     }
 
     /**
@@ -20,7 +21,7 @@ class ExperiencesController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.experiences.create');
     }
 
     /**
@@ -28,7 +29,18 @@ class ExperiencesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'type' => 'required|in:formazione,esperienza',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'period_start' => 'required|date',
+            'period_end' => 'nullable|date|after_or_equal:period_start',
+        ]);
+
+        Experience::create($data);
+
+        return redirect()->route('admin.experiences.index')
+            ->with('success', 'Esperienza creata con successo.');
     }
 
     /**
@@ -36,7 +48,7 @@ class ExperiencesController extends Controller
      */
     public function show(Experience $experience)
     {
-        //
+        return view('admin.experiences.show', compact('experience'));
     }
 
     /**
@@ -44,7 +56,7 @@ class ExperiencesController extends Controller
      */
     public function edit(Experience $experience)
     {
-        //
+        return view('admin.experiences.edit', compact('experience'));
     }
 
     /**
@@ -52,7 +64,18 @@ class ExperiencesController extends Controller
      */
     public function update(Request $request, Experience $experience)
     {
-        //
+        $data = $request->validate([
+            'type' => 'required|in:formazione,esperienza',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'period_start' => 'required|date',
+            'period_end' => 'nullable|date|after_or_equal:period_start',
+        ]);
+
+        $experience->update($data);
+
+        return redirect()->route('admin.experiences.index')
+            ->with('success', 'Esperienza aggiornata con successo.');
     }
 
     /**
@@ -60,6 +83,9 @@ class ExperiencesController extends Controller
      */
     public function destroy(Experience $experience)
     {
-        //
+        $experience->delete();
+
+        return redirect()->route('admin.experiences.index')
+            ->with('success', 'Esperienza eliminata con successo.');
     }
 }

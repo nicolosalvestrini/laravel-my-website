@@ -2,7 +2,6 @@
 @section('title', 'Servizi')
 @section('section', 'services')
 @section('content')
-{{-- scrivere qui la logica --}}
 <div class="page-heading">
     <div>
         <div class="eyebrow">
@@ -15,8 +14,7 @@
             Mostra come puoi trasformare un’idea in un progetto concreto.
         </p>
     </div>
-    {{-- scrivere qui la logica --}}
-    <a class="btn btn-primary" href="{{ ($adminBasePath ?? '/admin') . '/services/create' }}">
+    <a class="btn btn-primary" href="{{ route('admin.services.create') }}">
         <svg class="icon " aria-hidden="true">
             <use href="/admin-ui/icons.svg#plus">
             </use>
@@ -24,267 +22,82 @@
         Nuovo servizio
     </a>
 </div>
-<div class="toolbar">
-    {{-- scrivere qui la logica --}}
-    <div class="search-box">
-        <svg class="icon " aria-hidden="true">
-            <use href="/admin-ui/icons.svg#search">
-            </use>
-        </svg>
-        <input class="form-control" type="search" aria-label="Cerca un servizio…" placeholder="Cerca un servizio…">
+
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
     </div>
-    <select class="form-select" aria-label="Filtra elenco">
-        <option>
-            Tutti
-        </option>
-    </select>
-</div>
-{{-- scrivere qui la logica --}}
+@endif
+
 <div class="row g-4">
-    <div class="col-md-6 col-xl-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between mb-4">
-                    <span class="icon-box purple">
-                        <svg class="icon icon-lg" aria-hidden="true">
-                            <use href="/admin-ui/icons.svg#globe">
-                            </use>
-                        </svg>
-                    </span>
-                    <small class="text-muted">
-                        01
-                    </small>
-                </div>
-                <h3>
-                    Creazione siti web
-                </h3>
-                <p class="small mt-3">
-                    Siti web moderni, veloci e responsive su misura.
-                </p>
-                <div class="card-actions">
-                    <span class="text-muted small">
-                        Ordine 1
-                    </span>
-                    <div class="d-flex gap-2 justify-content-end">
-                        {{-- scrivere qui la logica --}}
-                        <a href="{{ ($adminBasePath ?? '/admin') . '/services/1' }}" class="btn btn-outline-light btn-icon" aria-label="Visualizza dettaglio">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#eye">
+    @forelse ($services as $service)
+        <div class="col-md-6 col-xl-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="icon-box purple">
+                            <svg class="icon icon-lg" aria-hidden="true">
+                                <use href="/admin-ui/icons.svg#{{ $service->icon ?: 'globe' }}">
                                 </use>
                             </svg>
-                        </a>
-                        <a href="{{ ($adminBasePath ?? '/admin') . '/services/1/edit' }}" class="btn btn-outline-light btn-icon" aria-label="Modifica">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#edit">
-                                </use>
-                            </svg>
-                        </a>
-                        <button type="button" class="btn btn-outline-danger btn-icon" disabled aria-label="Elimina (anteprima)">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#trash">
-                                </use>
-                            </svg>
-                        </button>
+                        </span>
+                        <small class="text-muted">
+                            {{ str_pad($service->sort_order, 2, '0', STR_PAD_LEFT) }}
+                        </small>
+                    </div>
+                    <h3>
+                        {{ $service->title }}
+                    </h3>
+                    <p class="small mt-3">
+                        {{ Str::limit($service->description, 100) }}
+                    </p>
+                    <div class="card-actions">
+                        <span class="text-muted small">
+                            Ordine {{ $service->sort_order }}
+                        </span>
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a href="{{ route('admin.services.show', $service) }}" class="btn btn-outline-light btn-icon" aria-label="Visualizza dettaglio">
+                                <svg class="icon " aria-hidden="true">
+                                    <use href="/admin-ui/icons.svg#eye">
+                                    </use>
+                                </svg>
+                            </a>
+                            <a href="{{ route('admin.services.edit', $service) }}" class="btn btn-outline-light btn-icon" aria-label="Modifica">
+                                <svg class="icon " aria-hidden="true">
+                                    <use href="/admin-ui/icons.svg#edit">
+                                    </use>
+                                </svg>
+                            </a>
+                            <form method="POST" action="{{ route('admin.services.destroy', $service) }}" onsubmit="return confirm('Eliminare questo servizio?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline-danger btn-icon" aria-label="Elimina">
+                                    <svg class="icon " aria-hidden="true">
+                                        <use href="/admin-ui/icons.svg#trash">
+                                        </use>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-6 col-xl-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between mb-4">
-                    <span class="icon-box purple">
-                        <svg class="icon icon-lg" aria-hidden="true">
-                            <use href="/admin-ui/icons.svg#monitor">
-                            </use>
-                        </svg>
-                    </span>
-                    <small class="text-muted">
-                        02
-                    </small>
-                </div>
+    @empty
+        <div class="col-12">
+            <div class="empty-state">
+                <svg class="icon " aria-hidden="true">
+                    <use href="/admin-ui/icons.svg#globe">
+                    </use>
+                </svg>
                 <h3>
-                    Landing page
+                    Nessun servizio ancora.
                 </h3>
-                <p class="small mt-3">
-                    Pagine efficaci e orientate alla conversione.
+                <p>
+                    Aggiungi il primo servizio che offri ai tuoi clienti.
                 </p>
-                <div class="card-actions">
-                    <span class="text-muted small">
-                        Ordine 2
-                    </span>
-                    <div class="d-flex gap-2 justify-content-end">
-                        {{-- scrivere qui la logica --}}
-                        <a href="{{ ($adminBasePath ?? '/admin') . '/services/1' }}" class="btn btn-outline-light btn-icon" aria-label="Visualizza dettaglio">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#eye">
-                                </use>
-                            </svg>
-                        </a>
-                        <a href="{{ ($adminBasePath ?? '/admin') . '/services/1/edit' }}" class="btn btn-outline-light btn-icon" aria-label="Modifica">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#edit">
-                                </use>
-                            </svg>
-                        </a>
-                        <button type="button" class="btn btn-outline-danger btn-icon" disabled aria-label="Elimina (anteprima)">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#trash">
-                                </use>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-6 col-xl-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between mb-4">
-                    <span class="icon-box purple">
-                        <svg class="icon icon-lg" aria-hidden="true">
-                            <use href="/admin-ui/icons.svg#briefcase">
-                            </use>
-                        </svg>
-                    </span>
-                    <small class="text-muted">
-                        03
-                    </small>
-                </div>
-                <h3>
-                    Siti per ristoranti e attività locali
-                </h3>
-                <p class="small mt-3">
-                    Soluzioni dedicate alla tua attività.
-                </p>
-                <div class="card-actions">
-                    <span class="text-muted small">
-                        Ordine 3
-                    </span>
-                    <div class="d-flex gap-2 justify-content-end">
-                        {{-- scrivere qui la logica --}}
-                        <a href="{{ ($adminBasePath ?? '/admin') . '/services/1' }}" class="btn btn-outline-light btn-icon" aria-label="Visualizza dettaglio">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#eye">
-                                </use>
-                            </svg>
-                        </a>
-                        <a href="{{ ($adminBasePath ?? '/admin') . '/services/1/edit' }}" class="btn btn-outline-light btn-icon" aria-label="Modifica">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#edit">
-                                </use>
-                            </svg>
-                        </a>
-                        <button type="button" class="btn btn-outline-danger btn-icon" disabled aria-label="Elimina (anteprima)">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#trash">
-                                </use>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6 col-xl-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between mb-4">
-                    <span class="icon-box purple">
-                        <svg class="icon icon-lg" aria-hidden="true">
-                            <use href="/admin-ui/icons.svg#settings">
-                            </use>
-                        </svg>
-                    </span>
-                    <small class="text-muted">
-                        04
-                    </small>
-                </div>
-                <h3>
-                    Manutenzione e aggiornamenti
-                </h3>
-                <p class="small mt-3">
-                    Supporto continuo per mantenere il sito al meglio.
-                </p>
-                <div class="card-actions">
-                    <span class="text-muted small">
-                        Ordine 4
-                    </span>
-                    <div class="d-flex gap-2 justify-content-end">
-                        {{-- scrivere qui la logica --}}
-                        <a href="{{ ($adminBasePath ?? '/admin') . '/services/1' }}" class="btn btn-outline-light btn-icon" aria-label="Visualizza dettaglio">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#eye">
-                                </use>
-                            </svg>
-                        </a>
-                        <a href="{{ ($adminBasePath ?? '/admin') . '/services/1/edit' }}" class="btn btn-outline-light btn-icon" aria-label="Modifica">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#edit">
-                                </use>
-                            </svg>
-                        </a>
-                        <button type="button" class="btn btn-outline-danger btn-icon" disabled aria-label="Elimina (anteprima)">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#trash">
-                                </use>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6 col-xl-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between mb-4">
-                    <span class="icon-box purple">
-                        <svg class="icon icon-lg" aria-hidden="true">
-                            <use href="/admin-ui/icons.svg#code">
-                            </use>
-                        </svg>
-                    </span>
-                    <small class="text-muted">
-                        05
-                    </small>
-                </div>
-                <h3>
-                    Applicazioni web personalizzate
-                </h3>
-                <p class="small mt-3">
-                    Soluzioni digitali per esigenze specifiche.
-                </p>
-                <div class="card-actions">
-                    <span class="text-muted small">
-                        Ordine 5
-                    </span>
-                    <div class="d-flex gap-2 justify-content-end">
-                        {{-- scrivere qui la logica --}}
-                        <a href="{{ ($adminBasePath ?? '/admin') . '/services/1' }}" class="btn btn-outline-light btn-icon" aria-label="Visualizza dettaglio">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#eye">
-                                </use>
-                            </svg>
-                        </a>
-                        <a href="{{ ($adminBasePath ?? '/admin') . '/services/1/edit' }}" class="btn btn-outline-light btn-icon" aria-label="Modifica">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#edit">
-                                </use>
-                            </svg>
-                        </a>
-                        <button type="button" class="btn btn-outline-danger btn-icon" disabled aria-label="Elimina (anteprima)">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#trash">
-                                </use>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    @endforelse
 </div>
 @endsection

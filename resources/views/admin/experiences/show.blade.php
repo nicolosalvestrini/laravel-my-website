@@ -2,8 +2,7 @@
 @section('title', 'Dettaglio esperienza')
 @section('section', 'experiences')
 @section('content')
-{{-- scrivere qui la logica --}}
-<a href="{{ ($adminBasePath ?? '/admin') . '/experiences' }}" class="back-link">
+<a href="{{ route('admin.experiences.index') }}" class="back-link">
     <svg class="icon " aria-hidden="true">
         <use href="/admin-ui/icons.svg#back">
         </use>
@@ -16,14 +15,13 @@
             IL TUO SITO, UN PASSO ALLA VOLTA
         </div>
         <h1 class="mb-0">
-            Corso Full Stack Web Development
+            {{ $experience->title }}
         </h1>
         <p>
             Un capitolo del tuo percorso professionale.
         </p>
     </div>
-    {{-- scrivere qui la logica --}}
-    <a class="btn btn-primary" href="{{ ($adminBasePath ?? '/admin') . '/experiences/1/edit' }}">
+    <a class="btn btn-primary" href="{{ route('admin.experiences.edit', $experience) }}">
         <svg class="icon " aria-hidden="true">
             <use href="/admin-ui/icons.svg#edit">
             </use>
@@ -41,14 +39,14 @@
                 </svg>
                 Il percorso
             </h2>
-            <span class="badge badge-purple">
-                Formazione
+            <span class="badge {{ $experience->type === 'formazione' ? 'badge-purple' : 'badge-blue' }}">
+                {{ ucfirst($experience->type) }}
             </span>
             <h2 class="mt-4">
-                Corso Full Stack Web Development — Boolean
+                {{ $experience->title }}
             </h2>
             <p class="detail-copy mt-3">
-                Percorso di formazione in sviluppo web: HTML, CSS, JavaScript, React, PHP, Laravel e database relazionali. Un’esperienza dedicata alla realizzazione di applicazioni complete.
+                {{ $experience->description }}
             </p>
         </div>
     </section>
@@ -67,19 +65,19 @@
                         Data di inizio
                     </dt>
                     <dd>
-                        1 gennaio 2024
+                        {{ $experience->period_start->translatedFormat('j F Y') }}
                     </dd>
                     <dt>
                         Data di fine
                     </dt>
                     <dd>
-                        1 gennaio 2025
+                        {{ $experience->period_end ? $experience->period_end->translatedFormat('j F Y') : 'In corso' }}
                     </dd>
                     <dt>
                         Ordine
                     </dt>
                     <dd>
-                        1
+                        {{ $experience->sort_order }}
                     </dd>
                 </dl>
                 <div class="danger-zone">
@@ -89,14 +87,17 @@
                     <p>
                         Rimuovi questo contenuto dal tuo sito.
                     </p>
-                    {{-- scrivere qui la logica --}}
-                    <button class="btn btn-outline-danger" type="button" disabled title="Anteprima grafica">
-                        <svg class="icon " aria-hidden="true">
-                            <use href="/admin-ui/icons.svg#trash">
-                            </use>
-                        </svg>
-                        Elimina esperienza
-                    </button>
+                    <form method="POST" action="{{ route('admin.experiences.destroy', $experience) }}" onsubmit="return confirm('Eliminare questa esperienza?');">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-outline-danger" type="submit">
+                            <svg class="icon " aria-hidden="true">
+                                <use href="/admin-ui/icons.svg#trash">
+                                </use>
+                            </svg>
+                            Elimina esperienza
+                        </button>
+                    </form>
                 </div>
             </div>
         </section>

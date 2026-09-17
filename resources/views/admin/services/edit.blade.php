@@ -2,8 +2,7 @@
 @section('title', 'Modifica servizio')
 @section('section', 'services')
 @section('content')
-{{-- scrivere qui la logica --}}
-<a href="{{ ($adminBasePath ?? '/admin') . '/services' }}" class="back-link">
+<a href="{{ route('admin.services.index') }}" class="back-link">
     <svg class="icon " aria-hidden="true">
         <use href="/admin-ui/icons.svg#back">
         </use>
@@ -23,12 +22,10 @@
         </p>
     </div>
 </div>
-<div class="preview-notice">
-    Anteprima grafica · I campi sono dimostrativi e il salvataggio non è attivo.
-</div>
-{{-- scrivere qui la logica --}}
-<form class="admin-form" onsubmit="return false" enctype="multipart/form-data">
-    {{-- scrivere qui la logica --}}
+
+<form class="admin-form" method="POST" action="{{ route('admin.services.update', $service) }}">
+    @csrf
+    @method('PUT')
     <div class="form-grid">
         <div>
             <section class="card mb-4">
@@ -41,23 +38,25 @@
                         Informazioni principali
                     </h2>
                     <div class="mb-4">
-                        {{-- scrivere qui la logica --}}
                         <label class="form-label" for="title">
                             Titolo del servizio
                         </label>
-                        <input type="text" class="form-control" id="title" name="title" value="Creazione siti web">
-                        <div class="form-text">
-                        </div>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ old('title', $service->title) }}">
+                        @error('title')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-4">
-                        {{-- scrivere qui la logica --}}
                         <label class="form-label" for="description">
                             Descrizione
                         </label>
-                        <textarea class="form-control" id="description" name="description" rows="6">Siti web moderni, veloci e responsive su misura per ogni esigenza.</textarea>
+                        <textarea class="form-control" id="description" name="description" rows="6">{{ old('description', $service->description) }}</textarea>
                         <div class="form-text">
                             Descrivi in modo chiaro cosa puoi offrire.
                         </div>
+                        @error('description')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
             </section>
@@ -73,40 +72,39 @@
                         Aspetto e posizione
                     </h2>
                     <div class="mb-4">
-                        {{-- scrivere qui la logica --}}
                         <label class="form-label" for="icon">
                             Icona
                         </label>
-                        <input type="text" class="form-control" id="icon" name="icon" value="globe">
+                        <input type="text" class="form-control" id="icon" name="icon" value="{{ old('icon', $service->icon) }}">
                         <div class="form-text">
-                            Nome della classe o percorso dell’icona.
+                            Nome dell’icona (es. globe, monitor, star, settings, code).
                         </div>
+                        @error('icon')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-4">
-                        {{-- scrivere qui la logica --}}
                         <label class="form-label" for="sort_order">
                             Ordine di visualizzazione
                         </label>
-                        <input type="number" class="form-control" id="sort_order" name="sort_order" value="1" step="1">
-                        <div class="form-text">
-                        </div>
+                        <input type="number" class="form-control" id="sort_order" name="sort_order" value="{{ old('sort_order', $service->sort_order) }}" step="1">
+                        @error('sort_order')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
             </section>
         </aside>
     </div>
-    {{-- scrivere qui la logica --}}
     <div class="form-actions">
-        {{-- scrivere qui la logica --}}
-        <a class="btn btn-outline-light" href="{{ ($adminBasePath ?? '/admin') . '/services' }}">
+        <a class="btn btn-outline-light" href="{{ route('admin.services.index') }}">
             <svg class="icon " aria-hidden="true">
                 <use href="/admin-ui/icons.svg#back">
                 </use>
             </svg>
             Annulla
         </a>
-        {{-- scrivere qui la logica --}}
-        <button class="btn btn-primary" type="button" disabled title="Anteprima grafica">
+        <button class="btn btn-primary" type="submit">
             <svg class="icon " aria-hidden="true">
                 <use href="/admin-ui/icons.svg#save">
                 </use>

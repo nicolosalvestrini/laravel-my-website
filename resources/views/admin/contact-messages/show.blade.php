@@ -2,8 +2,10 @@
 @section('title', 'Dettaglio messaggio')
 @section('section', 'contact-messages')
 @section('content')
-{{-- scrivere qui la logica --}}
-<a href="{{ ($adminBasePath ?? '/admin') . '/contact-messages' }}" class="back-link">
+@php
+$requestTypeLabels = ['preventivo' => 'Preventivo', 'collaborazione' => 'Collaborazione', 'lavoro' => 'Lavoro', 'informazioni' => 'Informazioni', 'altro' => 'Altro'];
+@endphp
+<a href="{{ route('admin.contact-messages.index') }}" class="back-link">
     <svg class="icon " aria-hidden="true">
         <use href="/admin-ui/icons.svg#back">
         </use>
@@ -16,55 +18,49 @@
             IL TUO SITO, UN PASSO ALLA VOLTA
         </div>
         <h1 class="mb-0">
-            Un nuovo sito per la mia attività
+            {{ $contactMessage->name }}
         </h1>
         <p>
             Una nuova opportunità da conoscere.
         </p>
     </div>
-    <span class="badge badge-blue">
-        Da leggere
-    </span>
+    @if ($contactMessage->is_read)
+        <span class="badge badge-muted">
+            Letto
+        </span>
+    @else
+        <span class="badge badge-blue">
+            Da leggere
+        </span>
+    @endif
 </div>
 <div class="form-grid">
     <section class="card">
         <div class="card-header d-flex align-items-center gap-3">
             <span class="avatar">
-                MR
+                {{ Str::of($contactMessage->name)->explode(' ')->map(fn ($p) => Str::substr($p, 0, 1))->take(2)->implode('') }}
             </span>
             <div>
                 <strong>
-                    Marco Rossi
+                    {{ $contactMessage->name }}
                 </strong>
                 <div class="text-muted small">
-                    marco@example.com
+                    {{ $contactMessage->email }}
                 </div>
             </div>
         </div>
         <div class="card-body">
             <p class="detail-copy">
-                Ciao Nicolò,
-                <br>
-                <br>
-                ho visto il tuo portfolio e mi piacerebbe realizzare un nuovo sito per la mia attività. Cerco una soluzione moderna, semplice da consultare anche da smartphone, che presenti i servizi e permetta ai clienti di contattarmi.
-                <br>
-                <br>
-                Mi farebbe piacere confrontarmi con te sui tempi e sulle possibilità.
-                <br>
-                <br>
-                Grazie,
-                <br>
-                Marco
+                {{ $contactMessage->message }}
             </p>
             <div class="form-actions">
-                {{-- scrivere qui la logica --}}
-                <button class="btn btn-primary" type="button" disabled title="Anteprima grafica">
+                <a class="btn btn-primary" href="mailto:{{ $contactMessage->email }}">
                     <svg class="icon " aria-hidden="true">
                         <use href="/admin-ui/icons.svg#mail">
                         </use>
                     </svg>
                     Rispondi via email
-                </button>
+                </a>
             </div>
         </div>
     </section>
@@ -83,36 +79,41 @@
                         Nome e cognome
                     </dt>
                     <dd>
-                        Marco Rossi
+                        {{ $contactMessage->name }}
                     </dd>
                     <dt>
                         Email
                     </dt>
                     <dd>
-                        marco@example.com
+                        {{ $contactMessage->email }}
                     </dd>
                     <dt>
                         Tipo di richiesta
                     </dt>
                     <dd>
                         <span class="badge badge-purple">
-                            Preventivo
+                            {{ $requestTypeLabels[$contactMessage->request_type] ?? $contactMessage->request_type }}
                         </span>
                     </dd>
                     <dt>
                         Ricevuto
                     </dt>
                     <dd>
-                        8 settembre 2026, 10:42
+                        {{ $contactMessage->created_at->translatedFormat('j F Y, H:i') }}
                     </dd>
                     <dt>
                         Stato
                     </dt>
                     <dd>
-                        {{-- scrivere qui la logica --}}
-                        <span class="badge badge-blue">
-                            Da leggere
-                        </span>
+                        @if ($contactMessage->is_read)
+                            <span class="badge badge-muted">
+                                Letto
+                            </span>
+                        @else
+                            <span class="badge badge-blue">
+                                Da leggere
+                            </span>
+                        @endif
                     </dd>
                 </dl>
                 <div class="danger-zone">
@@ -122,14 +123,17 @@
                     <p>
                         Rimuovi questo contenuto dal tuo sito.
                     </p>
-                    {{-- scrivere qui la logica --}}
-                    <button class="btn btn-outline-danger" type="button" disabled title="Anteprima grafica">
-                        <svg class="icon " aria-hidden="true">
-                            <use href="/admin-ui/icons.svg#trash">
-                            </use>
-                        </svg>
-                        Elimina messaggio
-                    </button>
+                    <form method="POST" action="{{ route('admin.contact-messages.destroy', $contactMessage) }}" onsubmit="return confirm('Eliminare questo messaggio?');">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-outline-danger" type="submit">
+                            <svg class="icon " aria-hidden="true">
+                                <use href="/admin-ui/icons.svg#trash">
+                                </use>
+                            </svg>
+                            Elimina messaggio
+                        </button>
+                    </form>
                 </div>
             </div>
         </section>

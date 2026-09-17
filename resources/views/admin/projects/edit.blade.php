@@ -2,8 +2,7 @@
 @section('title', 'Modifica progetto')
 @section('section', 'projects')
 @section('content')
-{{-- scrivere qui la logica --}}
-<a href="{{ ($adminBasePath ?? '/admin') . '/projects' }}" class="back-link">
+<a href="{{ route('admin.projects.index') }}" class="back-link">
     <svg class="icon " aria-hidden="true">
         <use href="/admin-ui/icons.svg#back">
         </use>
@@ -23,12 +22,14 @@
         </p>
     </div>
 </div>
-<div class="preview-notice">
-    Anteprima grafica · I campi sono dimostrativi e il salvataggio non è attivo.
-</div>
-{{-- scrivere qui la logica --}}
-<form class="admin-form" onsubmit="return false" enctype="multipart/form-data">
-    {{-- scrivere qui la logica --}}
+
+@php
+$selectedTechIds = collect(old('technologies', $project->technologies->pluck('id')->all()));
+@endphp
+
+<form class="admin-form" method="POST" action="{{ route('admin.projects.update', $project) }}" enctype="multipart/form-data">
+    @csrf
+    @method('PUT')
     <div class="form-grid">
         <div>
             <section class="card mb-4">
@@ -41,54 +42,56 @@
                         Informazioni principali
                     </h2>
                     <div class="mb-4">
-                        {{-- scrivere qui la logica --}}
                         <label class="form-label" for="title">
                             Titolo del progetto
                         </label>
-                        <input type="text" class="form-control" id="title" name="title" value="Nexus Games">
-                        <div class="form-text">
-                        </div>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ old('title', $project->title) }}">
+                        @error('title')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-4">
-                        {{-- scrivere qui la logica --}}
                         <label class="form-label" for="slug">
                             Slug
                         </label>
-                        <input type="text" class="form-control" id="slug" name="slug" value="nexus-games">
+                        <input type="text" class="form-control" id="slug" name="slug" value="{{ old('slug', $project->slug) }}">
                         <div class="form-text">
                             Il nome del progetto nel suo indirizzo web.
                         </div>
+                        @error('slug')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-4">
-                        {{-- scrivere qui la logica --}}
                         <label class="form-label" for="description">
                             Descrizione
                         </label>
-                        <textarea class="form-control" id="description" name="description" rows="6">Una piattaforma con backoffice Laravel e frontend React per la gestione di giochi, utenti e contenuti.</textarea>
-                        <div class="form-text">
-                        </div>
+                        <textarea class="form-control" id="description" name="description" rows="6">{{ old('description', $project->description) }}</textarea>
+                        @error('description')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-4">
-                                {{-- scrivere qui la logica --}}
                                 <label class="form-label" for="demo_url">
                                     Link demo
                                 </label>
-                                <input type="url" class="form-control" id="demo_url" name="demo_url" value="https://example.com">
-                                <div class="form-text">
-                                </div>
+                                <input type="url" class="form-control" id="demo_url" name="demo_url" value="{{ old('demo_url', $project->demo_url) }}">
+                                @error('demo_url')
+                                    <div class="form-text text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-4">
-                                {{-- scrivere qui la logica --}}
                                 <label class="form-label" for="github_url">
                                     Link GitHub
                                 </label>
-                                <input type="url" class="form-control" id="github_url" name="github_url" value="https://github.com/esempio/progetto">
-                                <div class="form-text">
-                                </div>
+                                <input type="url" class="form-control" id="github_url" name="github_url" value="{{ old('github_url', $project->github_url) }}">
+                                @error('github_url')
+                                    <div class="form-text text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -106,33 +109,17 @@
                     <p class="small">
                         Seleziona le tecnologie da associare al progetto.
                     </p>
-                    {{-- scrivere qui la logica --}}
                     <div class="tech-options">
-                        <label class="tech-option" for="tech-0">
-                            <input class="form-check-input m-0" type="checkbox" id="tech-0" name="technologies[]" value="1" checked>
-                            Laravel
-                        </label>
-                        <label class="tech-option" for="tech-1">
-                            <input class="form-check-input m-0" type="checkbox" id="tech-1" name="technologies[]" value="2" checked>
-                            React
-                        </label>
-                        <label class="tech-option" for="tech-2">
-                            <input class="form-check-input m-0" type="checkbox" id="tech-2" name="technologies[]" value="3" checked>
-                            MySQL
-                        </label>
-                        <label class="tech-option" for="tech-3">
-                            <input class="form-check-input m-0" type="checkbox" id="tech-3" name="technologies[]" value="4" checked>
-                            Bootstrap
-                        </label>
-                        <label class="tech-option" for="tech-4">
-                            <input class="form-check-input m-0" type="checkbox" id="tech-4" name="technologies[]" value="5">
-                            JavaScript
-                        </label>
-                        <label class="tech-option" for="tech-5">
-                            <input class="form-check-input m-0" type="checkbox" id="tech-5" name="technologies[]" value="6">
-                            Node.js
-                        </label>
+                        @foreach ($technologies as $technology)
+                            <label class="tech-option" for="tech-{{ $technology->id }}">
+                                <input class="form-check-input m-0" type="checkbox" id="tech-{{ $technology->id }}" name="technologies[]" value="{{ $technology->id }}" @checked($selectedTechIds->contains($technology->id))>
+                                {{ $technology->name }}
+                            </label>
+                        @endforeach
                     </div>
+                    @error('technologies')
+                        <div class="form-text text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
             </section>
         </div>
@@ -146,20 +133,19 @@
                         </svg>
                         Immagine di copertina
                     </h2>
-                    <div class="file-preview mb-3">
-                        <svg class="icon " aria-hidden="true">
-                            <use href="/admin-ui/icons.svg#user">
-                            </use>
-                        </svg>
-                        <div>
-                            <strong>
-                                Immagine attuale
-                            </strong>
-                            <p>
-                                Anteprima dimostrativa
-                            </p>
+                    @if ($project->image_path)
+                        <div class="file-preview mb-3">
+                            <img src="{{ $project->image_url }}" alt="{{ $project->title }}" style="width:64px;height:48px;object-fit:cover;border-radius:6px">
+                            <div>
+                                <strong>
+                                    Immagine attuale
+                                </strong>
+                                <p>
+                                    Scegli un nuovo file per sostituirla.
+                                </p>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                     <div class="upload-box">
                         <svg class="icon " aria-hidden="true">
                             <use href="/admin-ui/icons.svg#upload">
@@ -172,11 +158,13 @@
                                 JPG, PNG o GIF · massimo 2 MB
                             </span>
                         </p>
-                        {{-- scrivere qui la logica --}}
                         <label class="visually-hidden" for="image_path">
                             Scegli la copertina del progetto
                         </label>
                         <input class="form-control" type="file" id="image_path" name="image_path" accept="image/jpeg,image/png,image/gif">
+                        @error('image_path')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
             </section>
@@ -190,57 +178,56 @@
                         Organizzazione
                     </h2>
                     <div class="mb-4">
-                        {{-- scrivere qui la logica --}}
                         <label class="form-label" for="category">
                             Categoria
                         </label>
                         <select class="form-select" id="category" name="category">
-                            <option value="frontend">
+                            <option value="frontend" @selected(old('category', $project->category) === 'frontend')>
                                 Frontend
                             </option>
-                            <option value="backend">
+                            <option value="backend" @selected(old('category', $project->category) === 'backend')>
                                 Backend
                             </option>
-                            <option value="fullstack" selected>
+                            <option value="fullstack" @selected(old('category', $project->category) === 'fullstack')>
                                 Full Stack
                             </option>
-                            <option value="database">
+                            <option value="database" @selected(old('category', $project->category) === 'database')>
                                 Database
                             </option>
                         </select>
+                        @error('category')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
-                    {{-- scrivere qui la logica --}}
+                    <input type="hidden" name="is_featured" value="0">
                     <div class="form-check form-switch mb-3">
-                        <input class="form-check-input" role="switch" type="checkbox" name="is_featured" value="1" id="is_featured" checked>
+                        <input class="form-check-input" role="switch" type="checkbox" name="is_featured" value="1" id="is_featured" @checked(old('is_featured', $project->is_featured))>
                         <label class="form-check-label" for="is_featured">
                             Progetto in evidenza
                         </label>
                     </div>
                     <div class="mb-4">
-                        {{-- scrivere qui la logica --}}
                         <label class="form-label" for="sort_order">
                             Ordine di visualizzazione
                         </label>
-                        <input type="number" class="form-control" id="sort_order" name="sort_order" value="1" step="1">
-                        <div class="form-text">
-                        </div>
+                        <input type="number" class="form-control" id="sort_order" name="sort_order" value="{{ old('sort_order', $project->sort_order) }}" step="1">
+                        @error('sort_order')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
             </section>
         </aside>
     </div>
-    {{-- scrivere qui la logica --}}
     <div class="form-actions">
-        {{-- scrivere qui la logica --}}
-        <a class="btn btn-outline-light" href="{{ ($adminBasePath ?? '/admin') . '/projects' }}">
+        <a class="btn btn-outline-light" href="{{ route('admin.projects.index') }}">
             <svg class="icon " aria-hidden="true">
                 <use href="/admin-ui/icons.svg#back">
                 </use>
             </svg>
             Annulla
         </a>
-        {{-- scrivere qui la logica --}}
-        <button class="btn btn-primary" type="button" disabled title="Anteprima grafica">
+        <button class="btn btn-primary" type="submit">
             <svg class="icon " aria-hidden="true">
                 <use href="/admin-ui/icons.svg#save">
                 </use>

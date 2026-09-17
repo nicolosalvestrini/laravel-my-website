@@ -2,7 +2,6 @@
 @section('title', 'Testimonianze')
 @section('section', 'testimonials')
 @section('content')
-{{-- scrivere qui la logica --}}
 <div class="page-heading">
     <div>
         <div class="eyebrow">
@@ -15,8 +14,7 @@
             Raccogli le testimonianze e scegli quali mostrare sul sito.
         </p>
     </div>
-    {{-- scrivere qui la logica --}}
-    <a class="btn btn-primary" href="{{ ($adminBasePath ?? '/admin') . '/testimonials/create' }}">
+    <a class="btn btn-primary" href="{{ route('admin.testimonials.create') }}">
         <svg class="icon " aria-hidden="true">
             <use href="/admin-ui/icons.svg#plus">
             </use>
@@ -24,152 +22,94 @@
         Nuova testimonianza
     </a>
 </div>
-<div class="toolbar">
-    {{-- scrivere qui la logica --}}
-    <div class="search-box">
-        <svg class="icon " aria-hidden="true">
-            <use href="/admin-ui/icons.svg#search">
-            </use>
-        </svg>
-        <input class="form-control" type="search" aria-label="Cerca una testimonianza…" placeholder="Cerca una testimonianza…">
+
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
     </div>
-    <select class="form-select" aria-label="Filtra elenco">
-        <option>
-            Tutti gli stati
-        </option>
-        <option>
-            Pubblicata
-        </option>
-        <option>
-            Bozza
-        </option>
-    </select>
-</div>
-{{-- scrivere qui la logica --}}
+@endif
+
 <div class="row g-4">
-    <div class="col-lg-6">
-        <div class="card h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div class="d-flex align-items-center gap-3">
-                        <span class="avatar">
-                            MR
-                        </span>
-                        <div>
-                            <h3 class="mb-1">
-                                Marco Rossi
-                            </h3>
-                            <small class="text-muted">
-                                Cliente · Progetto web
-                            </small>
+    @forelse ($testimonials as $testimonial)
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="avatar">
+                                {{ Str::of($testimonial->author_name)->explode(' ')->map(fn ($p) => Str::substr($p, 0, 1))->take(2)->implode('') }}
+                            </span>
+                            <div>
+                                <h3 class="mb-1">
+                                    {{ $testimonial->author_name }}
+                                </h3>
+                                <small class="text-muted">
+                                    {{ $testimonial->author_role ?: '—' }}
+                                </small>
+                            </div>
                         </div>
+                        @if ($testimonial->is_published)
+                            <span class="badge badge-green">
+                                Pubblicata
+                            </span>
+                        @else
+                            <span class="badge badge-muted">
+                                Bozza
+                            </span>
+                        @endif
                     </div>
-                    <span class="badge badge-green">
-                        Pubblicata
-                    </span>
-                </div>
-                <div class="rating" aria-label="5 su 5">
-                    ★★★★★
-                </div>
-                <p class="quote mt-3">
-                    “Un esempio di testimonianza: qui potrai raccontare l’esperienza di chi ha lavorato con te.”
-                </p>
-                <div class="card-actions">
-                    <span class="text-muted small">
-                        Contenuto dimostrativo
-                    </span>
-                    <div class="d-flex gap-2 justify-content-end">
-                        {{-- scrivere qui la logica --}}
-                        <a href="{{ ($adminBasePath ?? '/admin') . '/testimonials/1' }}" class="btn btn-outline-light btn-icon" aria-label="Visualizza dettaglio">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#eye">
-                                </use>
-                            </svg>
-                        </a>
-                        <a href="{{ ($adminBasePath ?? '/admin') . '/testimonials/1/edit' }}" class="btn btn-outline-light btn-icon" aria-label="Modifica">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#edit">
-                                </use>
-                            </svg>
-                        </a>
-                        <button type="button" class="btn btn-outline-danger btn-icon" disabled aria-label="Elimina (anteprima)">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#trash">
-                                </use>
-                            </svg>
-                        </button>
+                    @if ($testimonial->rating)
+                        <div class="rating" aria-label="{{ $testimonial->rating }} su 5">
+                            {{ str_repeat('★', $testimonial->rating) }}{{ str_repeat('☆', 5 - $testimonial->rating) }}
+                        </div>
+                    @endif
+                    <p class="quote mt-3">
+                        “{{ Str::limit($testimonial->message, 140) }}”
+                    </p>
+                    <div class="card-actions">
+                        <div class="d-flex gap-2 justify-content-end w-100">
+                            <a href="{{ route('admin.testimonials.show', $testimonial) }}" class="btn btn-outline-light btn-icon" aria-label="Visualizza dettaglio">
+                                <svg class="icon " aria-hidden="true">
+                                    <use href="/admin-ui/icons.svg#eye">
+                                    </use>
+                                </svg>
+                            </a>
+                            <a href="{{ route('admin.testimonials.edit', $testimonial) }}" class="btn btn-outline-light btn-icon" aria-label="Modifica">
+                                <svg class="icon " aria-hidden="true">
+                                    <use href="/admin-ui/icons.svg#edit">
+                                    </use>
+                                </svg>
+                            </a>
+                            <form method="POST" action="{{ route('admin.testimonials.destroy', $testimonial) }}" onsubmit="return confirm('Eliminare questa testimonianza?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline-danger btn-icon" aria-label="Elimina">
+                                    <svg class="icon " aria-hidden="true">
+                                        <use href="/admin-ui/icons.svg#trash">
+                                        </use>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-6">
-        <div class="card h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div class="d-flex align-items-center gap-3">
-                        <span class="avatar">
-                            LB
-                        </span>
-                        <div>
-                            <h3 class="mb-1">
-                                Laura Bianchi
-                            </h3>
-                            <small class="text-muted">
-                                Collaboratrice · Design
-                            </small>
-                        </div>
-                    </div>
-                    <span class="badge badge-muted">
-                        Bozza
-                    </span>
-                </div>
-                <div class="rating" aria-label="5 su 5">
-                    ★★★★★
-                </div>
-                <p class="quote mt-3">
-                    “Un esempio di testimonianza: qui potrai raccontare l’esperienza di chi ha lavorato con te.”
+    @empty
+        <div class="col-12">
+            <div class="empty-state">
+                <svg class="icon " aria-hidden="true">
+                    <use href="/admin-ui/icons.svg#message">
+                    </use>
+                </svg>
+                <h3>
+                    Ogni collaborazione ha una storia.
+                </h3>
+                <p>
+                    Le testimonianze pubblicate troveranno spazio nella sezione “Cosa dicono di me”.
                 </p>
-                <div class="card-actions">
-                    <span class="text-muted small">
-                        Contenuto dimostrativo
-                    </span>
-                    <div class="d-flex gap-2 justify-content-end">
-                        {{-- scrivere qui la logica --}}
-                        <a href="{{ ($adminBasePath ?? '/admin') . '/testimonials/1' }}" class="btn btn-outline-light btn-icon" aria-label="Visualizza dettaglio">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#eye">
-                                </use>
-                            </svg>
-                        </a>
-                        <a href="{{ ($adminBasePath ?? '/admin') . '/testimonials/1/edit' }}" class="btn btn-outline-light btn-icon" aria-label="Modifica">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#edit">
-                                </use>
-                            </svg>
-                        </a>
-                        <button type="button" class="btn btn-outline-danger btn-icon" disabled aria-label="Elimina (anteprima)">
-                            <svg class="icon " aria-hidden="true">
-                                <use href="/admin-ui/icons.svg#trash">
-                                </use>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
-    </div>
-</div>
-<div class="empty-state mt-4">
-    <svg class="icon " aria-hidden="true">
-        <use href="/admin-ui/icons.svg#message">
-        </use>
-    </svg>
-    <h3>
-        Ogni collaborazione ha una storia.
-    </h3>
-    <p>
-        Le testimonianze pubblicate troveranno spazio nella sezione “Cosa dicono di me”.
-    </p>
+    @endforelse
 </div>
 @endsection

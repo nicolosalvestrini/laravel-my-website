@@ -76,7 +76,7 @@ class TestimonialsController extends Controller
             'author_role' => 'nullable|string|max:255',
             'avatar_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'message' => 'required|string',
-            'rating' => 'required|integer|min:1|max:5',
+            'rating' => 'nullable|integer|min:1|max:5',
             'is_published' => 'required|boolean',
         ]);
 

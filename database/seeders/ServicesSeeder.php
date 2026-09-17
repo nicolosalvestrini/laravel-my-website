@@ -23,13 +23,13 @@ class ServicesSeeder extends Seeder
             [
                 'title' => 'Landing page',
                 'description' => 'Pagine efficaci e orientate alla conversione per promuovere il tuo business.',
-                'icon' => 'layout',
+                'icon' => 'monitor',
                 'sort_order' => 2,
             ],
             [
                 'title' => 'Siti per ristoranti e attività locali',
                 'description' => 'Soluzioni dedicate per ristoranti, bar e negozi con focus su usabilità e presentazione.',
-                'icon' => 'utensils',
+                'icon' => 'star',
                 'sort_order' => 3,
             ],
             [

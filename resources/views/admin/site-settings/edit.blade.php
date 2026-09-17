@@ -2,8 +2,7 @@
 @section('title', 'Modifica impostazione')
 @section('section', 'site-settings')
 @section('content')
-{{-- scrivere qui la logica --}}
-<a href="{{ ($adminBasePath ?? '/admin') . '/site-settings' }}" class="back-link">
+<a href="{{ route('admin.site-settings.index') }}" class="back-link">
     <svg class="icon " aria-hidden="true">
         <use href="/admin-ui/icons.svg#back">
         </use>
@@ -23,12 +22,10 @@
         </p>
     </div>
 </div>
-<div class="preview-notice">
-    Anteprima grafica · I campi sono dimostrativi e il salvataggio non è attivo.
-</div>
-{{-- scrivere qui la logica --}}
-<form class="admin-form" onsubmit="return false" enctype="multipart/form-data">
-    {{-- scrivere qui la logica --}}
+
+<form class="admin-form" method="POST" action="{{ route('admin.site-settings.update', $siteSetting) }}">
+    @csrf
+    @method('PUT')
     <div class="form-grid">
         <div>
             <section class="card mb-4">
@@ -41,24 +38,28 @@
                         Informazioni principali
                     </h2>
                     <div class="mb-4">
-                        {{-- scrivere qui la logica --}}
                         <label class="form-label" for="key">
                             Chiave dell’impostazione
                         </label>
-                        <input type="text" class="form-control" id="key" name="key" value="hero_title">
+                        <input type="text" class="form-control" id="key" name="key" value="{{ old('key', $siteSetting->key) }}">
                         <div class="form-text">
                             Identificativo usato dal sito per leggere il contenuto.
                         </div>
+                        @error('key')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-4">
-                        {{-- scrivere qui la logica --}}
                         <label class="form-label" for="value">
                             Valore
                         </label>
-                        <textarea class="form-control" id="value" name="value" rows="6">Ciao, sono Nicolò. Creo esperienze web moderne e funzionali.</textarea>
+                        <textarea class="form-control" id="value" name="value" rows="6">{{ old('value', $siteSetting->value) }}</textarea>
                         <div class="form-text">
                             Testo, indirizzo web o percorso del contenuto.
                         </div>
+                        @error('value')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
             </section>
@@ -86,18 +87,15 @@
             </section>
         </aside>
     </div>
-    {{-- scrivere qui la logica --}}
     <div class="form-actions">
-        {{-- scrivere qui la logica --}}
-        <a class="btn btn-outline-light" href="{{ ($adminBasePath ?? '/admin') . '/site-settings' }}">
+        <a class="btn btn-outline-light" href="{{ route('admin.site-settings.index') }}">
             <svg class="icon " aria-hidden="true">
                 <use href="/admin-ui/icons.svg#back">
                 </use>
             </svg>
             Annulla
         </a>
-        {{-- scrivere qui la logica --}}
-        <button class="btn btn-primary" type="button" disabled title="Anteprima grafica">
+        <button class="btn btn-primary" type="submit">
             <svg class="icon " aria-hidden="true">
                 <use href="/admin-ui/icons.svg#save">
                 </use>

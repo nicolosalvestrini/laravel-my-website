@@ -2,8 +2,7 @@
 @section('title', 'Dettaglio progetto')
 @section('section', 'projects')
 @section('content')
-{{-- scrivere qui la logica --}}
-<a href="{{ ($adminBasePath ?? '/admin') . '/projects' }}" class="back-link">
+<a href="{{ route('admin.projects.index') }}" class="back-link">
     <svg class="icon " aria-hidden="true">
         <use href="/admin-ui/icons.svg#back">
         </use>
@@ -16,14 +15,13 @@
             IL TUO SITO, UN PASSO ALLA VOLTA
         </div>
         <h1 class="mb-0">
-            Nexus Games
+            {{ $project->title }}
         </h1>
         <p>
             Un progetto, tutte le sue informazioni.
         </p>
     </div>
-    {{-- scrivere qui la logica --}}
-    <a class="btn btn-primary" href="{{ ($adminBasePath ?? '/admin') . '/projects/1/edit' }}">
+    <a class="btn btn-primary" href="{{ route('admin.projects.edit', $project) }}">
         <svg class="icon " aria-hidden="true">
             <use href="/admin-ui/icons.svg#edit">
             </use>
@@ -31,43 +29,39 @@
         Modifica
     </a>
 </div>
+
+@php
+$categoryLabels = ['frontend' => 'Frontend', 'backend' => 'Backend', 'fullstack' => 'Full Stack', 'database' => 'Database'];
+@endphp
+
 <div class="form-grid">
     <div>
         <div class="card mb-4">
-            <div class="project-cover nexus">
-                <span class="badge badge-purple">
-                    Full Stack
-                </span>
-                <span class="cover-word">
-                    NEXUS
-                </span>
+            <div class="project-cover">
+                @if ($project->image_path)
+                    <img src="{{ $project->image_url }}" alt="{{ $project->title }}" style="width:100%;height:100%;object-fit:cover">
+                @endif
             </div>
             <div class="card-body">
                 <div class="d-flex gap-2 mb-3">
                     <span class="badge badge-purple">
-                        Full Stack
+                        {{ $categoryLabels[$project->category] ?? $project->category }}
                     </span>
-                    <span class="badge badge-green">
-                        In evidenza
-                    </span>
+                    @if ($project->is_featured)
+                        <span class="badge badge-green">
+                            In evidenza
+                        </span>
+                    @endif
                 </div>
-                <h2>
-                    Un punto d’incontro per chi ama giocare.
-                </h2>
                 <p class="detail-copy mt-3">
-                    Piattaforma completa con backoffice Laravel e frontend React per la gestione di giochi, utenti, ordini e contenuti.
+                    {{ $project->description }}
                 </p>
                 <div class="tags">
-                    {{-- scrivere qui la logica --}}
-                    <span class="badge badge-blue">
-                        Laravel
-                    </span>
-                    <span class="badge badge-blue">
-                        React
-                    </span>
-                    <span class="badge badge-blue">
-                        MySQL
-                    </span>
+                    @foreach ($project->technologies as $technology)
+                        <span class="badge badge-blue">
+                            {{ $technology->name }}
+                        </span>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -87,31 +81,39 @@
                         Slug
                     </dt>
                     <dd>
-                        nexus-games
+                        {{ $project->slug }}
                     </dd>
                     <dt>
                         Categoria
                     </dt>
                     <dd>
-                        Full Stack
+                        {{ $categoryLabels[$project->category] ?? $project->category }}
                     </dd>
                     <dt>
                         Ordine
                     </dt>
                     <dd>
-                        1
+                        {{ $project->sort_order }}
                     </dd>
                     <dt>
                         Demo
                     </dt>
                     <dd>
-                        https://example.com
+                        @if ($project->demo_url)
+                            <a href="{{ $project->demo_url }}" target="_blank" rel="noopener">{{ $project->demo_url }}</a>
+                        @else
+                            —
+                        @endif
                     </dd>
                     <dt>
                         Repository
                     </dt>
                     <dd>
-                        github.com/esempio/progetto
+                        @if ($project->github_url)
+                            <a href="{{ $project->github_url }}" target="_blank" rel="noopener">{{ $project->github_url }}</a>
+                        @else
+                            —
+                        @endif
                     </dd>
                 </dl>
                 <div class="danger-zone">
@@ -121,14 +123,17 @@
                     <p>
                         Rimuovi questo contenuto dal tuo sito.
                     </p>
-                    {{-- scrivere qui la logica --}}
-                    <button class="btn btn-outline-danger" type="button" disabled title="Anteprima grafica">
-                        <svg class="icon " aria-hidden="true">
-                            <use href="/admin-ui/icons.svg#trash">
-                            </use>
-                        </svg>
-                        Elimina progetto
-                    </button>
+                    <form method="POST" action="{{ route('admin.projects.destroy', $project) }}" onsubmit="return confirm('Eliminare questo progetto?');">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-outline-danger" type="submit">
+                            <svg class="icon " aria-hidden="true">
+                                <use href="/admin-ui/icons.svg#trash">
+                                </use>
+                            </svg>
+                            Elimina progetto
+                        </button>
+                    </form>
                 </div>
             </div>
         </section>

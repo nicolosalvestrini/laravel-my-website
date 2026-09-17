@@ -2,8 +2,7 @@
 @section('title', 'Dettaglio impostazione')
 @section('section', 'site-settings')
 @section('content')
-{{-- scrivere qui la logica --}}
-<a href="{{ ($adminBasePath ?? '/admin') . '/site-settings' }}" class="back-link">
+<a href="{{ route('admin.site-settings.index') }}" class="back-link">
     <svg class="icon " aria-hidden="true">
         <use href="/admin-ui/icons.svg#back">
         </use>
@@ -16,14 +15,13 @@
             IL TUO SITO, UN PASSO ALLA VOLTA
         </div>
         <h1 class="mb-0">
-            Titolo principale
+            {{ $siteSetting->key }}
         </h1>
         <p>
-            La prima frase che accoglie chi visita il tuo sito.
+            Un contenuto che il sito legge direttamente da qui.
         </p>
     </div>
-    {{-- scrivere qui la logica --}}
-    <a class="btn btn-primary" href="{{ ($adminBasePath ?? '/admin') . '/site-settings/1/edit' }}">
+    <a class="btn btn-primary" href="{{ route('admin.site-settings.edit', $siteSetting) }}">
         <svg class="icon " aria-hidden="true">
             <use href="/admin-ui/icons.svg#edit">
             </use>
@@ -42,13 +40,11 @@
                 Contenuto
             </h2>
             <div class="settings-key mb-4">
-                hero_title
+                {{ $siteSetting->key }}
             </div>
-            <h2 style="font-size:28px;line-height:1.4">
-                Ciao, sono Nicolò.
-                <br>
-                Creo esperienze web moderne e funzionali.
-            </h2>
+            <p class="detail-copy">
+                {{ $siteSetting->value }}
+            </p>
         </div>
     </section>
     <aside>
@@ -66,13 +62,7 @@
                         Chiave
                     </dt>
                     <dd class="settings-key">
-                        hero_title
-                    </dd>
-                    <dt>
-                        Sezione
-                    </dt>
-                    <dd>
-                        Homepage · Presentazione
+                        {{ $siteSetting->key }}
                     </dd>
                 </dl>
                 <div class="danger-zone">
@@ -82,14 +72,17 @@
                     <p>
                         Rimuovi questo contenuto dal tuo sito.
                     </p>
-                    {{-- scrivere qui la logica --}}
-                    <button class="btn btn-outline-danger" type="button" disabled title="Anteprima grafica">
-                        <svg class="icon " aria-hidden="true">
-                            <use href="/admin-ui/icons.svg#trash">
-                            </use>
-                        </svg>
-                        Elimina impostazione
-                    </button>
+                    <form method="POST" action="{{ route('admin.site-settings.destroy', $siteSetting) }}" onsubmit="return confirm('Eliminare questa impostazione?');">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-outline-danger" type="submit">
+                            <svg class="icon " aria-hidden="true">
+                                <use href="/admin-ui/icons.svg#trash">
+                                </use>
+                            </svg>
+                            Elimina impostazione
+                        </button>
+                    </form>
                 </div>
             </div>
         </section>

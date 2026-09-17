@@ -77,9 +77,12 @@
         <span>
             Messaggi
         </span>
-        <span class="nav-count">
-            3
-        </span>
+        @php($unreadNavCount = \App\Models\ContactMessage::unread()->count())
+        @if ($unreadNavCount > 0)
+            <span class="nav-count">
+                {{ $unreadNavCount }}
+            </span>
+        @endif
     </a>
     <a class="side-link" data-nav="site-settings" href="{{ ($adminBasePath ?? '/admin') . '/site-settings' }}">
         <svg class="icon " aria-hidden="true">

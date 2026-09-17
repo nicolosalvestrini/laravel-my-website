@@ -46,10 +46,6 @@
                     </div>
                 </div>
                 <div class="top-actions">
-                    <span class="preview-label">
-                        Anteprima grafica
-                    </span>
-                    {{-- scrivere qui la logica --}}
                     <a class="btn btn-outline-light btn-sm" href="/" target="_blank" rel="noopener">
                         Visita il sito
                         <svg class="icon " aria-hidden="true">
@@ -71,9 +67,6 @@
                 </span>
                 <span>
                     Il tuo sito. Il tuo spazio. &nbsp; © 2026 NS Web Craft
-                </span>
-                <span>
-                    Dati dimostrativi
                 </span>
             </footer>
         </div>

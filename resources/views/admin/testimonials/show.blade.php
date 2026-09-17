@@ -2,8 +2,7 @@
 @section('title', 'Dettaglio testimonianza')
 @section('section', 'testimonials')
 @section('content')
-{{-- scrivere qui la logica --}}
-<a href="{{ ($adminBasePath ?? '/admin') . '/testimonials' }}" class="back-link">
+<a href="{{ route('admin.testimonials.index') }}" class="back-link">
     <svg class="icon " aria-hidden="true">
         <use href="/admin-ui/icons.svg#back">
         </use>
@@ -16,14 +15,13 @@
             IL TUO SITO, UN PASSO ALLA VOLTA
         </div>
         <h1 class="mb-0">
-            La testimonianza di Marco
+            La testimonianza di {{ $testimonial->author_name }}
         </h1>
         <p>
             Le parole che raccontano una collaborazione.
         </p>
     </div>
-    {{-- scrivere qui la logica --}}
-    <a class="btn btn-primary" href="{{ ($adminBasePath ?? '/admin') . '/testimonials/1/edit' }}">
+    <a class="btn btn-primary" href="{{ route('admin.testimonials.edit', $testimonial) }}">
         <svg class="icon " aria-hidden="true">
             <use href="/admin-ui/icons.svg#edit">
             </use>
@@ -42,23 +40,29 @@
                 Testimonianza
             </h2>
             <div class="d-flex align-items-center gap-3 mb-4">
-                <span class="avatar">
-                    MR
-                </span>
+                @if ($testimonial->avatar_path)
+                    <img src="{{ $testimonial->avatar_url }}" alt="{{ $testimonial->author_name }}" style="width:48px;height:48px;border-radius:50%;object-fit:cover">
+                @else
+                    <span class="avatar">
+                        {{ Str::of($testimonial->author_name)->explode(' ')->map(fn ($p) => Str::substr($p, 0, 1))->take(2)->implode('') }}
+                    </span>
+                @endif
                 <div>
                     <h3 class="mb-1">
-                        Marco Rossi
+                        {{ $testimonial->author_name }}
                     </h3>
                     <span class="text-muted small">
-                        Cliente · Progetto web
+                        {{ $testimonial->author_role ?: '—' }}
                     </span>
                 </div>
             </div>
-            <div class="rating" aria-label="5 su 5">
-                ★★★★★
-            </div>
+            @if ($testimonial->rating)
+                <div class="rating" aria-label="{{ $testimonial->rating }} su 5">
+                    {{ str_repeat('★', $testimonial->rating) }}{{ str_repeat('☆', 5 - $testimonial->rating) }}
+                </div>
+            @endif
             <blockquote class="quote mt-3">
-                “Un esempio di testimonianza: qui potrai raccontare l’esperienza di chi ha lavorato con te.”
+                “{{ $testimonial->message }}”
             </blockquote>
         </div>
     </section>
@@ -72,21 +76,27 @@
                     </svg>
                     Pubblicazione
                 </h2>
-                <span class="badge badge-green">
-                    Pubblicata
-                </span>
+                @if ($testimonial->is_published)
+                    <span class="badge badge-green">
+                        Pubblicata
+                    </span>
+                @else
+                    <span class="badge badge-muted">
+                        Bozza
+                    </span>
+                @endif
                 <dl class="detail-list mt-4">
                     <dt>
                         Valutazione
                     </dt>
                     <dd>
-                        5 su 5
+                        {{ $testimonial->rating ? $testimonial->rating . ' su 5' : 'Nessuna' }}
                     </dd>
                     <dt>
                         Autore
                     </dt>
                     <dd>
-                        Marco Rossi
+                        {{ $testimonial->author_name }}
                     </dd>
                 </dl>
                 <div class="danger-zone">
@@ -96,14 +106,17 @@
                     <p>
                         Rimuovi questo contenuto dal tuo sito.
                     </p>
-                    {{-- scrivere qui la logica --}}
-                    <button class="btn btn-outline-danger" type="button" disabled title="Anteprima grafica">
-                        <svg class="icon " aria-hidden="true">
-                            <use href="/admin-ui/icons.svg#trash">
-                            </use>
-                        </svg>
-                        Elimina testimonianza
-                    </button>
+                    <form method="POST" action="{{ route('admin.testimonials.destroy', $testimonial) }}" onsubmit="return confirm('Eliminare questa testimonianza?');">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-outline-danger" type="submit">
+                            <svg class="icon " aria-hidden="true">
+                                <use href="/admin-ui/icons.svg#trash">
+                                </use>
+                            </svg>
+                            Elimina testimonianza
+                        </button>
+                    </form>
                 </div>
             </div>
         </section>

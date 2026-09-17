@@ -8,14 +8,13 @@
             PANNELLO DI CONTROLLO
         </div>
         <h1 class="mb-0">
-            Bentornato, Nicolò.
+            Bentornato, {{ auth()->user()->name }}.
         </h1>
         <p>
             Tutto quello che serve per dare forma al tuo spazio online.
         </p>
     </div>
-    {{-- scrivere qui la logica --}}
-    <a class="btn btn-primary" href="{{ ($adminBasePath ?? '/admin') . '/projects/create' }}">
+    <a class="btn btn-primary" href="{{ route('admin.projects.create') }}">
         <svg class="icon " aria-hidden="true">
             <use href="/admin-ui/icons.svg#plus">
             </use>
@@ -37,7 +36,7 @@
         <br>
         Gestisci i contenuti che raccontano chi sei.
     </p>
-    <a href="{{ ($adminBasePath ?? '/admin') . '/site-settings' }}" class="btn btn-outline-light btn-sm mt-1">
+    <a href="{{ route('admin.site-settings.index') }}" class="btn btn-outline-light btn-sm mt-1">
         Personalizza il sito
         <svg class="icon " aria-hidden="true">
             <use href="/admin-ui/icons.svg#arrow">
@@ -51,7 +50,6 @@
         </svg>
     </div>
 </section>
-{{-- scrivere qui la logica --}}
 <div class="row g-3">
     <div class="col-6 col-xl-3">
         <div class="card stat-card h-100">
@@ -60,7 +58,7 @@
                     Progetti
                 </div>
                 <div class="stat-value">
-                    4
+                    {{ $projectsCount }}
                 </div>
                 <div class="stat-note">
                     Il tuo lavoro, in evidenza
@@ -81,7 +79,7 @@
                     Servizi
                 </div>
                 <div class="stat-value">
-                    5
+                    {{ $servicesCount }}
                 </div>
                 <div class="stat-note">
                     Soluzioni che puoi offrire
@@ -102,7 +100,7 @@
                     Tecnologie
                 </div>
                 <div class="stat-value">
-                    10
+                    {{ $technologiesCount }}
                 </div>
                 <div class="stat-note">
                     Competenze da raccontare
@@ -123,7 +121,7 @@
                     Messaggi
                 </div>
                 <div class="stat-value">
-                    3
+                    {{ $unreadMessagesCount }}
                 </div>
                 <div class="stat-note">
                     Nuove conversazioni
@@ -142,7 +140,7 @@
     <h2 class="section-title">
         Progetti in evidenza
     </h2>
-    <a href="{{ ($adminBasePath ?? '/admin') . '/projects' }}">
+    <a href="{{ route('admin.projects.index') }}">
         Vedi tutti &nbsp;
         <svg class="icon " aria-hidden="true">
             <use href="/admin-ui/icons.svg#arrow">
@@ -151,145 +149,53 @@
     </a>
 </div>
 <div class="row g-3">
-    <div class="col-md-4">
-        <div class="card project-card h-100">
-            <div class="project-cover nexus">
-                <span class="badge badge-purple">
-                    Full Stack
-                </span>
-                <span class="cover-word">
-                    NEXUS
-                </span>
-            </div>
-            <div class="card-body">
-                <h3>
-                    Nexus Games
-                </h3>
-                <p>
-                    Una piattaforma completa per una community di giocatori.
-                </p>
-                <div class="tags">
-                    <span class="badge badge-purple">
-                        Laravel
-                    </span>
-                    <span class="badge badge-blue">
-                        React
-                    </span>
-                    <span class="badge badge-purple">
-                        MySQL
-                    </span>
+    @forelse ($featuredProjects as $project)
+        <div class="col-md-4">
+            <div class="card project-card h-100">
+                <div class="project-cover">
+                    @if ($project->image_path)
+                        <img src="{{ $project->image_url }}" alt="{{ $project->title }}" style="width:100%;height:100%;object-fit:cover">
+                    @endif
                 </div>
-                <div class="card-actions">
-                    <a class="btn btn-outline-light btn-sm" href="{{ ($adminBasePath ?? '/admin') . '/projects/1' }}">
-                        <svg class="icon " aria-hidden="true">
-                            <use href="/admin-ui/icons.svg#eye">
-                            </use>
-                        </svg>
-                        Dettaglio
-                    </a>
-                    <a class="btn btn-outline-light btn-icon" href="{{ ($adminBasePath ?? '/admin') . '/projects/1/edit' }}" aria-label="Modifica Nexus Games">
-                        <svg class="icon " aria-hidden="true">
-                            <use href="/admin-ui/icons.svg#edit">
-                            </use>
-                        </svg>
-                    </a>
+                <div class="card-body">
+                    <h3>
+                        {{ $project->title }}
+                    </h3>
+                    <p>
+                        {{ Str::limit($project->description, 70) }}
+                    </p>
+                    <div class="tags">
+                        @foreach ($project->technologies as $technology)
+                            <span class="badge badge-purple">
+                                {{ $technology->name }}
+                            </span>
+                        @endforeach
+                    </div>
+                    <div class="card-actions">
+                        <a class="btn btn-outline-light btn-sm" href="{{ route('admin.projects.show', $project) }}">
+                            <svg class="icon " aria-hidden="true">
+                                <use href="/admin-ui/icons.svg#eye">
+                                </use>
+                            </svg>
+                            Dettaglio
+                        </a>
+                        <a class="btn btn-outline-light btn-icon" href="{{ route('admin.projects.edit', $project) }}" aria-label="Modifica {{ $project->title }}">
+                            <svg class="icon " aria-hidden="true">
+                                <use href="/admin-ui/icons.svg#edit">
+                                </use>
+                            </svg>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card project-card h-100">
-            <div class="project-cover react">
-                <span class="badge badge-blue">
-                    Frontend
-                </span>
-                <svg class="icon " aria-hidden="true">
-                    <use href="/admin-ui/icons.svg#atom">
-                    </use>
-                </svg>
-            </div>
-            <div class="card-body">
-                <h3>
-                    React Application
-                </h3>
-                <p>
-                    Un’interfaccia moderna, veloce e responsive.
-                </p>
-                <div class="tags">
-                    <span class="badge badge-purple">
-                        React
-                    </span>
-                    <span class="badge badge-blue">
-                        JavaScript
-                    </span>
-                    <span class="badge badge-purple">
-                        Bootstrap
-                    </span>
-                </div>
-                <div class="card-actions">
-                    <a class="btn btn-outline-light btn-sm" href="{{ ($adminBasePath ?? '/admin') . '/projects/1' }}">
-                        <svg class="icon " aria-hidden="true">
-                            <use href="/admin-ui/icons.svg#eye">
-                            </use>
-                        </svg>
-                        Dettaglio
-                    </a>
-                    <a class="btn btn-outline-light btn-icon" href="{{ ($adminBasePath ?? '/admin') . '/projects/1/edit' }}" aria-label="Modifica React Application">
-                        <svg class="icon " aria-hidden="true">
-                            <use href="/admin-ui/icons.svg#edit">
-                            </use>
-                        </svg>
-                    </a>
-                </div>
-            </div>
+    @empty
+        <div class="col-12">
+            <p class="text-muted">
+                Nessun progetto in evidenza ancora. Contrassegnane uno per mostrarlo qui.
+            </p>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card project-card h-100">
-            <div class="project-cover node">
-                <span class="badge badge-blue">
-                    Backend
-                </span>
-                <span class="cover-word">
-                    node.js
-                </span>
-            </div>
-            <div class="card-body">
-                <h3>
-                    Express API
-                </h3>
-                <p>
-                    API REST per connettere dati ed esperienze.
-                </p>
-                <div class="tags">
-                    <span class="badge badge-purple">
-                        Node.js
-                    </span>
-                    <span class="badge badge-blue">
-                        Express
-                    </span>
-                    <span class="badge badge-purple">
-                        JavaScript
-                    </span>
-                </div>
-                <div class="card-actions">
-                    <a class="btn btn-outline-light btn-sm" href="{{ ($adminBasePath ?? '/admin') . '/projects/1' }}">
-                        <svg class="icon " aria-hidden="true">
-                            <use href="/admin-ui/icons.svg#eye">
-                            </use>
-                        </svg>
-                        Dettaglio
-                    </a>
-                    <a class="btn btn-outline-light btn-icon" href="{{ ($adminBasePath ?? '/admin') . '/projects/1/edit' }}" aria-label="Modifica Express API">
-                        <svg class="icon " aria-hidden="true">
-                            <use href="/admin-ui/icons.svg#edit">
-                            </use>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+    @endforelse
 </div>
 <div class="row g-4">
     <div class="col-lg-7">
@@ -297,7 +203,7 @@
             <h2 class="section-title">
                 Ultimi messaggi
             </h2>
-            <a href="{{ ($adminBasePath ?? '/admin') . '/contact-messages' }}">
+            <a href="{{ route('admin.contact-messages.index') }}">
                 Apri la casella &nbsp;
                 <svg class="icon " aria-hidden="true">
                     <use href="/admin-ui/icons.svg#arrow">
@@ -306,70 +212,32 @@
             </a>
         </div>
         <div class="card">
-            {{-- scrivere qui la logica --}}
-            <a class="message-row" href="{{ ($adminBasePath ?? '/admin') . '/contact-messages/1' }}">
-                <span class="avatar">
-                    MR
-                </span>
-                <div class="message-content">
-                    <div class="d-flex justify-content-between gap-2">
-                        <h3>
-                            Marco Rossi
-                        </h3>
-                        <time>
-                            10:42
-                        </time>
+            @forelse ($latestMessages as $message)
+                <a class="message-row" href="{{ route('admin.contact-messages.show', $message) }}">
+                    <span class="avatar">
+                        {{ Str::of($message->name)->explode(' ')->map(fn ($p) => Str::substr($p, 0, 1))->take(2)->implode('') }}
+                    </span>
+                    <div class="message-content">
+                        <div class="d-flex justify-content-between gap-2">
+                            <h3>
+                                {{ $message->name }}
+                            </h3>
+                            <time>
+                                {{ $message->created_at->diffForHumans() }}
+                            </time>
+                        </div>
+                        <p class="text-truncate">
+                            {{ Str::limit($message->message, 60) }}
+                        </p>
                     </div>
-                    <p class="text-truncate">
-                        Un nuovo sito per la mia attività
+                </a>
+            @empty
+                <div class="card-body">
+                    <p class="text-muted mb-0">
+                        Nessun messaggio ricevuto ancora.
                     </p>
-                    <small class="text-muted">
-                        Vorrei raccontarti il mio progetto…
-                    </small>
                 </div>
-            </a>
-            <a class="message-row" href="{{ ($adminBasePath ?? '/admin') . '/contact-messages/1' }}">
-                <span class="avatar">
-                    LB
-                </span>
-                <div class="message-content">
-                    <div class="d-flex justify-content-between gap-2">
-                        <h3>
-                            Laura Bianchi
-                        </h3>
-                        <time>
-                            Ieri
-                        </time>
-                    </div>
-                    <p class="text-truncate">
-                        Una possibile collaborazione
-                    </p>
-                    <small class="text-muted">
-                        Ho visto il tuo portfolio e mi piacerebbe…
-                    </small>
-                </div>
-            </a>
-            <a class="message-row" href="{{ ($adminBasePath ?? '/admin') . '/contact-messages/1' }}">
-                <span class="avatar">
-                    AV
-                </span>
-                <div class="message-content">
-                    <div class="d-flex justify-content-between gap-2">
-                        <h3>
-                            Andrea Verdi
-                        </h3>
-                        <time>
-                            Ieri
-                        </time>
-                    </div>
-                    <p class="text-truncate">
-                        Informazioni sui tuoi servizi
-                    </p>
-                    <small class="text-muted">
-                        Ciao Nicolò, avrei bisogno di una landing…
-                    </small>
-                </div>
-            </a>
+            @endforelse
         </div>
     </div>
     <div class="col-lg-5">
@@ -380,7 +248,7 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <a href="{{ ($adminBasePath ?? '/admin') . '/experiences/create' }}" class="quick-link">
+                <a href="{{ route('admin.experiences.create') }}" class="quick-link">
                     <span class="icon-box purple">
                         <svg class="icon " aria-hidden="true">
                             <use href="/admin-ui/icons.svg#briefcase">
@@ -398,7 +266,7 @@
                         </use>
                     </svg>
                 </a>
-                <a href="{{ ($adminBasePath ?? '/admin') . '/services/create' }}" class="quick-link">
+                <a href="{{ route('admin.services.create') }}" class="quick-link">
                     <span class="icon-box purple">
                         <svg class="icon " aria-hidden="true">
                             <use href="/admin-ui/icons.svg#globe">
@@ -416,7 +284,7 @@
                         </use>
                     </svg>
                 </a>
-                <a href="{{ ($adminBasePath ?? '/admin') . '/site-settings/1/edit' }}" class="quick-link">
+                <a href="{{ route('admin.site-settings.index') }}" class="quick-link">
                     <span class="icon-box purple">
                         <svg class="icon " aria-hidden="true">
                             <use href="/admin-ui/icons.svg#settings">

@@ -2,8 +2,7 @@
 @section('title', 'Nuova testimonianza')
 @section('section', 'testimonials')
 @section('content')
-{{-- scrivere qui la logica --}}
-<a href="{{ ($adminBasePath ?? '/admin') . '/testimonials' }}" class="back-link">
+<a href="{{ route('admin.testimonials.index') }}" class="back-link">
     <svg class="icon " aria-hidden="true">
         <use href="/admin-ui/icons.svg#back">
         </use>
@@ -23,12 +22,9 @@
         </p>
     </div>
 </div>
-<div class="preview-notice">
-    Anteprima grafica · I campi sono dimostrativi e il salvataggio non è attivo.
-</div>
-{{-- scrivere qui la logica --}}
-<form class="admin-form" onsubmit="return false" enctype="multipart/form-data">
-    {{-- scrivere qui la logica --}}
+
+<form class="admin-form" method="POST" action="{{ route('admin.testimonials.store') }}" enctype="multipart/form-data">
+    @csrf
     <div class="form-grid">
         <div>
             <section class="card mb-4">
@@ -43,61 +39,53 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-4">
-                                {{-- scrivere qui la logica --}}
                                 <label class="form-label" for="author_name">
                                     Nome dell’autore
                                 </label>
-                                <input type="text" class="form-control" id="author_name" name="author_name" value="">
-                                <div class="form-text">
-                                </div>
+                                <input type="text" class="form-control" id="author_name" name="author_name" value="{{ old('author_name') }}">
+                                @error('author_name')
+                                    <div class="form-text text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-4">
-                                {{-- scrivere qui la logica --}}
                                 <label class="form-label" for="author_role">
                                     Ruolo o attività
                                 </label>
-                                <input type="text" class="form-control" id="author_role" name="author_role" value="">
-                                <div class="form-text">
-                                </div>
+                                <input type="text" class="form-control" id="author_role" name="author_role" value="{{ old('author_role') }}">
+                                @error('author_role')
+                                    <div class="form-text text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
                     <div class="mb-4">
-                        {{-- scrivere qui la logica --}}
                         <label class="form-label" for="message">
                             Testimonianza
                         </label>
-                        <textarea class="form-control" id="message" name="message" rows="6"></textarea>
-                        <div class="form-text">
-                        </div>
+                        <textarea class="form-control" id="message" name="message" rows="6">{{ old('message') }}</textarea>
+                        @error('message')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-4">
-                        {{-- scrivere qui la logica --}}
                         <label class="form-label" for="rating">
                             Valutazione
                         </label>
                         <select class="form-select" id="rating" name="rating">
-                            <option value="" selected>
+                            <option value="" @selected(old('rating') === null)>
                                 Nessuna valutazione
                             </option>
-                            <option value="1">
-                                1 stella
-                            </option>
-                            <option value="2">
-                                2 stelle
-                            </option>
-                            <option value="3">
-                                3 stelle
-                            </option>
-                            <option value="4">
-                                4 stelle
-                            </option>
-                            <option value="5">
-                                5 stelle
-                            </option>
+                            @for ($i = 1; $i <= 5; $i++)
+                                <option value="{{ $i }}" @selected((int) old('rating') === $i)>
+                                    {{ $i }} {{ $i === 1 ? 'stella' : 'stelle' }}
+                                </option>
+                            @endfor
                         </select>
+                        @error('rating')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
             </section>
@@ -124,11 +112,13 @@
                                 JPG, PNG o GIF · massimo 2 MB
                             </span>
                         </p>
-                        {{-- scrivere qui la logica --}}
                         <label class="visually-hidden" for="avatar_path">
                             Scegli una foto per la testimonianza
                         </label>
                         <input class="form-control" type="file" id="avatar_path" name="avatar_path" accept="image/jpeg,image/png,image/gif">
+                        @error('avatar_path')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
             </section>
@@ -141,9 +131,9 @@
                         </svg>
                         Pubblicazione
                     </h2>
-                    {{-- scrivere qui la logica --}}
+                    <input type="hidden" name="is_published" value="0">
                     <div class="form-check form-switch mb-3">
-                        <input class="form-check-input" role="switch" type="checkbox" name="is_published" value="1" id="is_published">
+                        <input class="form-check-input" role="switch" type="checkbox" name="is_published" value="1" id="is_published" @checked(old('is_published'))>
                         <label class="form-check-label" for="is_published">
                             Pubblica sul sito
                         </label>
@@ -155,18 +145,15 @@
             </section>
         </aside>
     </div>
-    {{-- scrivere qui la logica --}}
     <div class="form-actions">
-        {{-- scrivere qui la logica --}}
-        <a class="btn btn-outline-light" href="{{ ($adminBasePath ?? '/admin') . '/testimonials' }}">
+        <a class="btn btn-outline-light" href="{{ route('admin.testimonials.index') }}">
             <svg class="icon " aria-hidden="true">
                 <use href="/admin-ui/icons.svg#back">
                 </use>
             </svg>
             Annulla
         </a>
-        {{-- scrivere qui la logica --}}
-        <button class="btn btn-primary" type="button" disabled title="Anteprima grafica">
+        <button class="btn btn-primary" type="submit">
             <svg class="icon " aria-hidden="true">
                 <use href="/admin-ui/icons.svg#save">
                 </use>

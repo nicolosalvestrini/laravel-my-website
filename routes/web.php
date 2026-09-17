@@ -18,4 +18,6 @@ require __DIR__ . '/auth.php';
 
 require __DIR__ . '/admin.php';
 
-Route::post('/contatti', [ContactMessagesController::class, 'store'])->name('contact.store');
+Route::post('/contatti', [ContactMessagesController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('contact.store');

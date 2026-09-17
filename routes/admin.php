@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
 
+    Route::get('/', function () {
+        return view('admin.dashboard');
+    })->name('dashboard');
+    
     Route::resource('projects', ProjectsController::class);
     Route::resource('services', ServicesController::class);
     Route::resource('technologies', TechnologiesController::class);

@@ -1,22 +1,22 @@
 @extends('admin.layouts.guest')
 
-@section('title', 'Accedi')
+@section('title', 'Recupera password')
 
 @section('content')
     <span class="icon-box purple mb-4">
         <svg class="icon " aria-hidden="true">
-            <use href="/admin-ui/icons.svg#lock">
+            <use href="/admin-ui/icons.svg#mail">
             </use>
         </svg>
     </span>
     <div class="eyebrow">
-        IL TUO SPAZIO DI LAVORO
+        RECUPERO ACCESSO
     </div>
     <h1>
-        Bentornato.
+        Password dimenticata?
     </h1>
     <p class="small mb-4">
-        Accedi per dare forma al tuo sito.
+        Inserisci la tua email: ti invieremo un link per scegliere una nuova password.
     </p>
 
     @if (session('status'))
@@ -25,7 +25,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('password.email') }}">
         @csrf
         @if ($errors->any())
             <div class="alert alert-danger">
@@ -37,34 +37,18 @@
                 Email
             </label>
             <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required autofocus>
-            <div class="form-text">
-            </div>
-        </div>
-        <div class="mb-4">
-            <label class="form-label" for="password">
-                Password
-            </label>
-            <input type="password" class="form-control" id="password" name="password" required>
-            <div class="form-text">
-            </div>
-        </div>
-        <div class="form-check mb-4">
-            <input class="form-check-input" type="checkbox" id="remember" name="remember">
-            <label class="form-check-label" for="remember">
-                Ricordami
-            </label>
-        </div>
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <a href="{{ route('password.request') }}" class="form-text">
-                Password dimenticata?
-            </a>
         </div>
         <button class="btn btn-primary w-100" type="submit">
-            Accedi
+            Invia link di reset
             <svg class="icon " aria-hidden="true">
                 <use href="/admin-ui/icons.svg#arrow">
                 </use>
             </svg>
         </button>
     </form>
+    <p class="text-center form-text mt-3 mb-0">
+        <a href="{{ route('login') }}">
+            Torna al login
+        </a>
+    </p>
 @endsection

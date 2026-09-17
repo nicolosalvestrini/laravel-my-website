@@ -1,29 +1,51 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
+@extends('admin.layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
-                </div>
-            </div>
+@section('title', 'Il tuo account')
+@section('section', 'profile')
 
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
-                </div>
-            </div>
+@section('content')
+<a href="{{ route('admin.dashboard') }}" class="back-link">
+    <svg class="icon " aria-hidden="true">
+        <use href="/admin-ui/icons.svg#back">
+        </use>
+    </svg>
+    Torna alla panoramica
+</a>
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">
+            IL TUO ACCOUNT
         </div>
+        <h1 class="mb-0">
+            Il tuo account
+        </h1>
+        <p>
+            Gestisci i dati di accesso al pannello.
+        </p>
     </div>
-</x-app-layout>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <section class="card mb-4">
+            <div class="card-body">
+                @include('profile.partials.update-profile-information-form')
+            </div>
+        </section>
+
+        <section class="card mb-4">
+            <div class="card-body">
+                @include('profile.partials.delete-user-form')
+            </div>
+        </section>
+    </div>
+
+    <div class="col-lg-6">
+        <section class="card mb-4">
+            <div class="card-body">
+                @include('profile.partials.update-password-form')
+            </div>
+        </section>
+    </div>
+</div>
+@endsection

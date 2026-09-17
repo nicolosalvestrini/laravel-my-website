@@ -92,26 +92,27 @@
     </a>
 </nav>
 <div class="sidebar-bottom">
-    {{-- scrivere qui la logica --}}
-    <div class="profile">
+    <a class="profile" href="{{ route('profile.edit') }}">
         <span class="avatar">
-            NS
+            {{ Str::of(auth()->user()->name)->explode(' ')->map(fn ($part) => Str::substr($part, 0, 1))->take(2)->implode('') }}
         </span>
         <div>
             <strong>
-                Nicolò Salvestrini
+                {{ auth()->user()->name }}
             </strong>
             <small>
                 Amministratore
             </small>
         </div>
-    </div>
-    {{-- scrivere qui la logica --}}
-    <button type="button" class="side-link w-100" disabled>
-        <svg class="icon " aria-hidden="true">
-            <use href="/admin-ui/icons.svg#logout">
-            </use>
-        </svg>
-        Esci dall’account
-    </button>
+    </a>
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit" class="side-link w-100">
+            <svg class="icon " aria-hidden="true">
+                <use href="/admin-ui/icons.svg#logout">
+                </use>
+            </svg>
+            Esci dall’account
+        </button>
+    </form>
 </div>

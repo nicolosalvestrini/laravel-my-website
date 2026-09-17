@@ -1,55 +1,51 @@
-<section class="space-y-6">
-    <header>
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-            {{ __('Delete Account') }}
-        </h2>
+<h2 class="form-section-title">
+    <svg class="icon " aria-hidden="true">
+        <use href="/admin-ui/icons.svg#trash">
+        </use>
+    </svg>
+    Elimina account
+</h2>
+<p class="form-text mb-4">
+    Una volta eliminato, l'accesso al pannello non sarà più possibile. Questa azione è irreversibile.
+</p>
 
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.') }}
-        </p>
-    </header>
+<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+    Elimina account
+</button>
 
-    <x-danger-button
-        x-data=""
-        x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
-    >{{ __('Delete Account') }}</x-danger-button>
-
-    <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
-        <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
-            @csrf
-            @method('delete')
-
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ __('Are you sure you want to delete your account?') }}
-            </h2>
-
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
-            </p>
-
-            <div class="mt-6">
-                <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
-
-                <x-text-input
-                    id="password"
-                    name="password"
-                    type="password"
-                    class="mt-1 block w-3/4"
-                    placeholder="{{ __('Password') }}"
-                />
-
-                <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
-            </div>
-
-            <div class="mt-6 flex justify-end">
-                <x-secondary-button x-on:click="$dispatch('close')">
-                    {{ __('Cancel') }}
-                </x-secondary-button>
-
-                <x-danger-button class="ms-3">
-                    {{ __('Delete Account') }}
-                </x-danger-button>
-            </div>
-        </form>
-    </x-modal>
-</section>
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ route('profile.destroy') }}">
+                @csrf
+                @method('delete')
+                <div class="modal-header">
+                    <h2 class="modal-title fs-6" id="deleteAccountModalLabel">
+                        Confermi l'eliminazione dell'account?
+                    </h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="form-text">
+                        Inserisci la password per confermare. L'operazione non può essere annullata.
+                    </p>
+                    <label class="form-label" for="delete_password">
+                        Password
+                    </label>
+                    <input type="password" class="form-control" id="delete_password" name="password" placeholder="Password">
+                    @error('password', 'userDeletion')
+                        <div class="form-text text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+                        Annulla
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        Elimina definitivamente
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

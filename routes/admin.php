@@ -9,7 +9,7 @@ use App\Http\Controllers\ContactMessagesController;
 use App\Http\Controllers\SiteSettingsController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
 
     Route::resource('projects', ProjectsController::class);
     Route::resource('services', ServicesController::class);

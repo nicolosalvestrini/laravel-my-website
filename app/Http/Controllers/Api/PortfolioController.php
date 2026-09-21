@@ -43,6 +43,37 @@ class PortfolioController extends Controller
         ]);
     }
 
+    public function project(string $slug)
+    {
+        $project = Project::with(['technologies', 'images'])->where('slug', $slug)->firstOrFail();
+
+        return [
+            'id' => $project->id,
+            'title' => $project->title,
+            'slug' => $project->slug,
+            'description' => $project->description,
+            'details' => $project->details,
+            'features' => collect(preg_split('/\R/',(string) $project->features))
+                ->map(fn ($line) => trim($line))
+                ->filter()
+                ->values(),
+            'category' => $project->category,
+            'image_url' => $project->image_url,
+            'demo_url' => $project->demo_url,
+            'github_url' => $project->github_url,
+            'technologies' => $project->technologies->map(fn (Technology $technology) => [
+                'id' => $technology->id,
+                'name' => $technology->name,
+                'icon' => $technology->icon,
+            ]),
+            'images' => $project->images->map(fn ($image) => [
+                'id' => $image->id,
+                'image_url' => $image->image_url,
+                'caption' => $image->caption,
+            ]),
+        ];
+    }
+
     public function services()
     {
         return Service::orderBy('sort_order')->get(['id', 'title', 'description', 'icon', 'sort_order']);

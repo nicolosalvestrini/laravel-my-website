@@ -71,6 +71,30 @@ $selectedTechIds = collect(old('technologies', $project->technologies->pluck('id
                             <div class="form-text text-danger">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div class="mb-4">
+                        <label class="form-label" for="details">
+                            Descrizione dettagliata (pagina del progetto)
+                        </label>
+                        <textarea class="form-control" id="details" name="details" rows="8">{{ old('details', $project->details) }}</textarea>
+                        <div class="form-text">
+                            Spiega cosa hai fatto, le scelte tecniche e cosa hai imparato. Separa i paragrafi con una riga vuota.
+                        </div>
+                        @error('details')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label" for="features">
+                            Funzionalità principali
+                        </label>
+                        <textarea class="form-control" id="features" name="features" rows="5">{{ old('features', $project->features) }}</textarea>
+                        <div class="form-text">
+                            Una funzionalità per riga: diventano un elenco puntato.
+                        </div>
+                        @error('features')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-4">
@@ -120,6 +144,50 @@ $selectedTechIds = collect(old('technologies', $project->technologies->pluck('id
                     @error('technologies')
                         <div class="form-text text-danger">{{ $message }}</div>
                     @enderror
+                </div>
+            </section>
+                    <section class="card mb-4">
+                <div class="card-body">
+                    <h2 class="form-section-title">
+                        <svg class="icon " aria-hidden="true">
+                            <use href="/admin-ui/icons.svg#upload">
+                            </use>
+                        </svg>
+                        Galleria screenshot
+                    </h2>
+                    @if ($project->images->isNotEmpty())
+                        <p class="small">Spunta gli screenshot che vuoi eliminare al salvataggio.</p>
+                        <div class="d-flex flex-wrap gap-3 mb-3">
+                            @foreach ($project->images as $image)
+                                <label class="d-block" style="width:120px">
+                                    <img src="{{ $image->image_url }}" alt="Screenshot {{ $loop->iteration }}" style="width:120px;height:80px;object-fit:cover;border-radius:6px">
+                                    <span class="d-flex align-items-center gap-2 small mt-1">
+                                        <input class="form-check-input m-0" type="checkbox" name="delete_images[]" value="{{ $image->id }}">
+                                        Elimina
+                                    </span>
+                                </label>
+                            @endforeach
+                        </div>
+                    @endif
+                    <div class="upload-box">
+                        <p>
+                            Aggiungi screenshot del progetto
+                            <br>
+                            <span class="form-text">
+                                JPG, PNG o WebP · massimo 4 MB ciascuno · fino a 12
+                            </span>
+                        </p>
+                        <label class="visually-hidden" for="gallery">
+                            Aggiungi screenshot del progetto
+                        </label>
+                        <input class="form-control" type="file" id="gallery" name="gallery[]" accept="image/jpeg,image/png,image/webp" multiple>
+                        @error('gallery')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
+                        @error('gallery.*')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
             </section>
         </div>

@@ -66,6 +66,30 @@
                             <div class="form-text text-danger">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div class="mb-4">
+                        <label class="form-label" for="details">
+                            Descrizione dettagliata (pagina del progetto)
+                        </label>
+                        <textarea class="form-control" id="details" name="details" rows="8">{{ old('details') }}</textarea>
+                        <div class="form-text">
+                            Spiega cosa hai fatto, le scelte tecniche e cosa hai imparato. Separa i paragrafi con una riga vuota.
+                        </div>
+                        @error('details')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label" for="features">
+                            Funzionalità principali
+                        </label>
+                        <textarea class="form-control" id="features" name="features" rows="5">{{ old('features') }}</textarea>
+                        <div class="form-text">
+                            Una funzionalità per riga: diventano un elenco puntato.
+                        </div>
+                        @error('features')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-4">
@@ -115,6 +139,36 @@
                     @error('technologies')
                         <div class="form-text text-danger">{{ $message }}</div>
                     @enderror
+                </div>
+            </section>
+                    <section class="card mb-4">
+                <div class="card-body">
+                    <h2 class="form-section-title">
+                        <svg class="icon " aria-hidden="true">
+                            <use href="/admin-ui/icons.svg#upload">
+                            </use>
+                        </svg>
+                        Galleria screenshot
+                    </h2>
+                    <div class="upload-box">
+                        <p>
+                            Aggiungi screenshot del progetto
+                            <br>
+                            <span class="form-text">
+                                JPG, PNG o WebP · massimo 4 MB ciascuno · fino a 12
+                            </span>
+                        </p>
+                        <label class="visually-hidden" for="gallery">
+                            Aggiungi screenshot del progetto
+                        </label>
+                        <input class="form-control" type="file" id="gallery" name="gallery[]" accept="image/jpeg,image/png,image/webp" multiple>
+                        @error('gallery')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
+                        @error('gallery.*')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
             </section>
         </div>

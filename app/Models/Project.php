@@ -20,6 +20,8 @@ class Project extends Model
     protected $fillable = [
         'title',
         'description',
+        'details',
+        'features',
         'image_path',
         'slug',
         'sort_order',
@@ -28,6 +30,11 @@ class Project extends Model
         'category',
         'is_featured',
     ];
+
+    public function images()
+    {
+        return $this->hasMany(ProjectImage::class)->orderBy('sort_order')->orderBy('id');
+    }
 
     public function technologies()
     {

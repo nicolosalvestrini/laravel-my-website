@@ -32,7 +32,13 @@ class SiteSettingsController extends Controller
         $data = $request->validate([
             'key' => 'required|string|max:255|unique:site_settings,key',
             'value' => 'nullable|string',
+            'value_file' => 'nullable|file|max:10240',
         ]);
+
+        if ($request->hasFile('value_file')) {
+            $data['value'] = $request->file('value_file')->store('site-settings', 'public');
+        }
+        unset($data['value_file']);
 
         SiteSetting::create($data);
 
@@ -64,7 +70,13 @@ class SiteSettingsController extends Controller
         $data = $request->validate([
             'key' => 'required|string|max:255|unique:site_settings,key,' . $siteSetting->id,
             'value' => 'nullable|string',
+            'value_file' => 'nullable|file|max:10240',
         ]);
+
+        if ($request->hasFile('value_file')) {
+            $data['value'] = $request->file('value_file')->store('site-settings', 'public');
+        }
+        unset($data['value_file']);
 
         $siteSetting->update($data);
 

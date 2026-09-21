@@ -23,7 +23,7 @@
     </div>
 </div>
 
-<form class="admin-form" method="POST" action="{{ route('admin.site-settings.update', $siteSetting) }}">
+<form class="admin-form" method="POST" action="{{ route('admin.site-settings.update', $siteSetting) }}" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <div class="form-grid">
@@ -58,6 +58,18 @@
                             Testo, indirizzo web o percorso del contenuto.
                         </div>
                         @error('value')
+                            <div class="form-text text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label" for="value_file">
+                            Oppure carica un nuovo file
+                        </label>
+                        <input type="file" class="form-control" id="value_file" name="value_file">
+                        <div class="form-text">
+                            Se scegli un file (immagine, PDF...), sostituirà il valore testuale attuale.
+                        </div>
+                        @error('value_file')
                             <div class="form-text text-danger">{{ $message }}</div>
                         @enderror
                     </div>

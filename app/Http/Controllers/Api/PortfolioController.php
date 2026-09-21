@@ -81,6 +81,29 @@ class PortfolioController extends Controller
             ]);
     }
 
+    public function storeTestimonial(Request $request)
+    {
+        $data = $request->validate([
+            'author_name' => 'required|string|max:100',
+            'author_role' => 'nullable|string|max:150',
+            'message' => 'required|string|min:20|max:1000',
+            'rating' => 'nullable|integer|min:1|max:5',
+            'website' => 'nullable|string',
+        ]);
+
+        // Campo trappola per i bot: gli utenti reali non lo compilano.
+        if (! empty($data['website'])) {
+            return response()->json(['message' => 'Grazie! La tua testimonianza è stata inviata.'], 201);
+        }
+        unset($data['website']);
+
+        Testimonial::create($data + ['is_published' => false]);
+
+        return response()->json([
+            'message' => 'Grazie! La tua testimonianza è stata inviata e sarà pubblicata dopo la verifica.',
+        ], 201);
+    }
+
     public function siteSettings()
     {
         return SiteSetting::all(['key', 'value'])->pluck('value', 'key');

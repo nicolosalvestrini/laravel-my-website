@@ -2,7 +2,7 @@
     <strong>
         NS
     </strong>
-    Web Craft
+    Nicolò Salvestrini
     <small>
         ADMIN PANEL
     </small>

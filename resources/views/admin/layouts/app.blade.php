@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noindex, nofollow">
         <title>
-            @yield('title', 'Panoramica') · NS Web Craft Admin
+            @yield('title', 'Panoramica') · Nicolò Salvestrini Admin
         </title>
         <link rel="stylesheet" href="{{ asset('admin-ui/vendor/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('admin-ui/admin.css') }}">
@@ -63,10 +63,10 @@
                     <strong>
                         NS
                     </strong>
-                    Web Craft
+                    Nicolò Salvestrini
                 </span>
                 <span>
-                    Il tuo sito. Il tuo spazio. &nbsp; © 2026 NS Web Craft
+                    Il tuo sito. Il tuo spazio. &nbsp; © 2026 Nicolò Salvestrini
                 </span>
             </footer>
         </div>

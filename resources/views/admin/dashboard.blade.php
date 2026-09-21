@@ -24,7 +24,7 @@
 </div>
 <section class="card welcome mb-4">
     <div class="eyebrow">
-        NS WEB CRAFT · IL TUO PORTFOLIO
+        IL TUO PORTFOLIO
     </div>
     <h2>
         Le tue idee, sempre

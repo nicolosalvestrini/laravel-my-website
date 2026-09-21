@@ -1,6 +1,6 @@
-# Grafica admin NS Web Craft
+# Grafica admin Nicolò Salvestrini
 
-Viste Blade statiche in stile NS Web Craft: blu notte, bordi sottili, accenti blu e viola. Bootstrap locale per griglia responsive, form, tabelle e menu mobile. Nessun servizio esterno, CDN, database o controller richiesto dall'anteprima.
+Viste Blade statiche in stile Nicolò Salvestrini: blu notte, bordi sottili, accenti blu e viola. Bootstrap locale per griglia responsive, form, tabelle e menu mobile. Nessun servizio esterno, CDN, database o controller richiesto dall'anteprima.
 
 ## Pagine
 
